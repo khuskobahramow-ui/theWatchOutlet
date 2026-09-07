@@ -16,7 +16,7 @@ const PriceTag = ({ usd, size = "sm", className = "" }) => {
 
   return (
     <div className={`flex items-baseline gap-1.5 flex-wrap ${className}`}>
-      <span className={` text-blue-600 font-extrabold ${s.usd}`}>
+      <span className={` text-white font-extrabold ${s.usd}`}>
         ${priceUsd.toLocaleString()}
       </span>
       <span className={`text-slate-400 font-medium ${s.uzs}`}>

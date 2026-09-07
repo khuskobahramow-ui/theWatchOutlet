@@ -72,7 +72,7 @@ const CarCard = ({ car }) => {
     <>
       <div
         onClick={() => setShowDetail(true)}
-        className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer"
+        className="bg-[#0f192b] rounded-2xl overflow-hidden border-[2px] border-[#657591] shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between group cursor-pointer"
       >
         {/* =====================================================
             1. RASM QISMI
@@ -142,7 +142,7 @@ const CarCard = ({ car }) => {
                 MOSHINA NOMI
             ================================================== */}
 
-            <h3 className="font-bold text-[13px] text-slate-900 leading-snug line-clamp-1 mb-0.5">
+            <h3 className="font-bold text-[13px] text-white leading-snug line-clamp-1 mb-0.5">
               {car?.name || "Avtomobil"}
             </h3>
 
@@ -174,11 +174,11 @@ const CarCard = ({ car }) => {
                 JOY
             ================================================== */}
 
-            <div className="flex items-center gap-1 truncate max-w-[55%]">
+            {/* <div className="flex items-center gap-1 truncate max-w-[55%]">
               <LuMapPin className="text-slate-400 shrink-0" />
 
               <span className="truncate">{car?.location || "O'zbekiston"}</span>
-            </div>
+            </div> */}
 
             {/* =================================================
                 SANA

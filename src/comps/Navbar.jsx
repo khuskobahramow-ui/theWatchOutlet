@@ -35,33 +35,34 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="flex justify-between items-center px-3.5 py-2.5 bg-white border-b border-slate-200  top-0 z-40">
+      <nav className="flex justify-between items-center px-3.5 py-3.5 bg-[#0f192b] border-b border-slate-200  top-0 z-40">
         {/* Logo */}
         <div className="flex justify-center items-center gap-1.25">
-          <Link to="/">
+          {/* <Link to="/">
             <img
               className="h-13.5"
-              src={`https://i.ibb.co/4nB8X0P6/photo-1788431459911-0.webp`}
+              src={`https://i.ibb.co/d4hwTVg5/photo-1788807555396-0.webp`}
               alt="Logo"
             />
-          </Link>
+          </Link> */}
+          <h1 className=" font-bold text-white text-1xl">The Watch Outlet</h1>
         </div>
 
         {/* text */}
-        <div>
+        {/* <div>
           <p className="text-center leading-3.5 text-[15px] font-bold">
             Tekshirilgani, To'g'ri Tanlov <br />
             <span className="text-[9px] text-slate-500 font-medium">
               Ishonchliy Bozor
             </span>
           </p>
-        </div>
+        </div> */}
 
         {/* links / Menu Button */}
         <div>
           <button
             onClick={() => setIsOpen(true)}
-            className="p-1 text-slate-800 hover:bg-slate-100 rounded-lg active:scale-90 transition-all cursor-pointer flex items-center justify-center"
+            className="p-1 text-white hover:bg-slate-100 rounded-lg active:scale-90 transition-all cursor-pointer flex items-center justify-center"
           >
             <MdMenuOpen size={28} />
           </button>

@@ -3,7 +3,7 @@ import axios from "axios";
 // Token va URL loyihadagi .env faylidan olinadi
 const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
 const WEB_APP_URL =
-  import.meta.env.VITE_WEB_APP_URL || "https://avtotek.netlify.app";
+  import.meta.env.VITE_WEB_APP_URL || "https://thewatchoutlet.netlify.app";
 const DELAY_BETWEEN_MESSAGES = 150; // Telegram limitidan oshib ketmaslik uchun 150ms
 
 function sleep(ms) {

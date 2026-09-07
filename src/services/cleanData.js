@@ -47,9 +47,9 @@ if (!BOT_TOKEN) {
 const bot = new Telegraf(BOT_TOKEN);
 
 // Kanallar ro'yxati va ID/usernamelari (AvtoTek)
-const MARKET_CHANNEL_ID = "@DataBaseForAvtoTek"; // Bozor postlari kanali
-const AUCTION_CHANNEL_ID = "@AvtoTekAuksiyon"; // Auksion kanali
-const INSTALLMENT_CHANNEL_ID = "@avtotekfornasiyasavdo"; // Nasiya savdo kanali
+const MARKET_CHANNEL_ID = "@dataBaseForTheWatchOutlet"; // Bozor postlari kanali
+const AUCTION_CHANNEL_ID = "@auctionForTheWatchOutlet"; // Auksion kanali
+const INSTALLMENT_CHANNEL_ID = "@nasiyaForTheWatchOutlet"; // Nasiya savdo kanali
 
 // Universal tozalash funksiyasi
 async function cleanupCollection(collectionName, channelId) {

@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from "react";
-
-import { LuHeart, LuMapPin, LuCalendar } from "react-icons/lu";
-
+import { LuHeart, LuCalendar } from "react-icons/lu";
 import { FaHeart } from "react-icons/fa";
 import CarDetailModal from "./CarDetailModal.jsx";
 import { isCarLiked, toggleCarLike } from "./Likes";
 import PriceTag from "../comps/PriceTag";
 
-const CarCard = ({ car }) => {
+const CarCard = ({ car: watch }) => {
   // =========================================================
   // BO'SH YOKI YAROQSIZ OB'YEKTLARNI BLOKLASH
   // =========================================================
-  const hasName = car?.name && String(car.name).trim() !== "";
+  const hasName = watch?.name && String(watch.name).trim() !== "";
   const hasPrice =
-    Number(car?.price || car?.totalPrice || car?.startingPrice || 0) > 0;
+    Number(watch?.price || watch?.totalPrice || watch?.startingPrice || 0) > 0;
 
   // Agarda nomi ham, narxi ham bo'lmasa kartochka umuman chizilmaydi
-  if (!car || (!hasName && !hasPrice)) {
+  if (!watch || (!hasName && !hasPrice)) {
     return null;
   }
 
   // =========================================================
-  // LIKE
+  // LIKE (YOQTIRILGANLAR)
   // =========================================================
 
   const [isLiked, setIsLiked] = useState(false);
 
-  // Component birinchi chizilganda, shu mashina avval like
-  // qilinganmi — localStorage'dan tekshiramiz.
   useEffect(() => {
-    setIsLiked(isCarLiked(car?.id));
-  }, [car?.id]);
+    setIsLiked(isCarLiked(watch?.id));
+  }, [watch?.id]);
 
   const handleToggleLike = (e) => {
     e.stopPropagation();
-    const newState = toggleCarLike(car?.id);
+    const newState = toggleCarLike(watch?.id);
     setIsLiked(newState);
   };
 
@@ -48,24 +44,15 @@ const CarCard = ({ car }) => {
   // RASM
   // =========================================================
 
-  // bot.js "images" nomli MASSIV sifatida saqlaydi (bir nechta rasm URL'i),
-  // shuning uchun birinchisini olamiz — mavjud bo'lmagan "car.image" (birlik) emas.
-  // Eski/boshqa manbadan "image" (birlik) kelib qolsa ham ishlashi uchun fallback qoldirildi.
   const imageUrl =
-    (Array.isArray(car?.images) && car.images.length > 0
-      ? car.images[0]
+    (Array.isArray(watch?.images) && watch.images.length > 0
+      ? watch.images[0]
       : null) ||
-    car?.image ||
+    watch?.image ||
     "";
 
-  // Probeg (km) — himoyalangan parsing: bazada eski/matnli qiymat
-  // ("150000 km" kabi) qolib ketgan bo'lsa ham, faqat raqamlarni ajratib olamiz,
-  // shunda NaN/"не число" chiqmaydi.
-  const mileageNumber =
-    Number(String(car?.mileage ?? 0).replace(/[^0-9]/g, "")) || 0;
-
   // =========================================================
-  // CARD
+  // CARD UI
   // =========================================================
 
   return (
@@ -79,46 +66,34 @@ const CarCard = ({ car }) => {
         ====================================================== */}
 
         <div className="relative w-full h-45 bg-slate-100 overflow-hidden">
-          {/* =================================================
-              RASM BOR BO'LSA
-          ================================================== */}
-
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt={car?.name || "Avtomobil"}
+              alt={watch?.name || watch?.brand || "Soat"}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              // -------------------------------------------------
-              // RASM YUKLANMAGANDA
-              // -------------------------------------------------
-
               onError={(event) => {
                 console.error("❌ CARD RASMI YUKLANMADI:", imageUrl);
-
-                // Rasm o'rniga fallback
                 event.currentTarget.style.display = "none";
-
                 const parent = event.currentTarget.parentElement;
-
                 if (parent) {
                   parent.setAttribute("data-image-error", "true");
                 }
               }}
             />
           ) : (
-            /* =================================================
-               RASM URL YO'Q
-            ================================================== */
-
             <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
               Rasm mavjud emas
             </div>
           )}
 
-          {/* ===================================================
-              YURAKCHA
-          ==================================================== */}
+          {/* BREND NOMI (Aksiya/Brend belgilari) */}
+          {watch?.brand && (
+            <span className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-semibold px-2 py-0.5 rounded-md border border-white/10 uppercase">
+              {watch.brand}
+            </span>
+          )}
 
+          {/* YURAKCHA (LIKE) */}
           <button
             type="button"
             onClick={handleToggleLike}
@@ -137,57 +112,35 @@ const CarCard = ({ car }) => {
         ====================================================== */}
 
         <div className="p-2 leading-3 flex flex-col flex-1 justify-between">
-          <div className=" flex justify-center flex-col gap-1 ">
-            {/* =================================================
-                MOSHINA NOMI
-            ================================================== */}
-
+          <div className="flex justify-center flex-col gap-1">
+            {/* SOAT NOMI */}
             <h3 className="font-bold text-[13px] text-white leading-snug line-clamp-1 mb-0.5">
-              {car?.name || "Avtomobil"}
+              {watch?.name ||
+                `${watch?.brand || ""} ${watch?.model || ""}`.trim() ||
+                "Nomsiz Soat"}
             </h3>
 
-            {/* =================================================
-                NARXI
-            ================================================== */}
+            {/* NARXI */}
+            <PriceTag usd={watch?.price} size="sm" className="mb-0.5" />
 
-            <PriceTag usd={car?.price} size="sm" className="mb-0.5" />
+            {/* MEXANIZM VA DIAMETR */}
+            <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-3">
+              <span>{watch?.mechanism || "Mexanika"}</span>
 
-            {/* =================================================
-                YILI VA PROBEG
-            ================================================== */}
-
-            <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 mb-3">
-              <span>{car?.year || "-"}-yil</span>
-
-              <span>•</span>
-
-              <span>{mileageNumber.toLocaleString()} km</span>
+              {watch?.diameter && (
+                <>
+                  <span>•</span>
+                  <span>{watch.diameter}</span>
+                </>
+              )}
             </div>
           </div>
 
-          {/* ===================================================
-              PASTKI QISM
-          ==================================================== */}
-
-          <div className="pt-2.5 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-400 font-medium">
-            {/* =================================================
-                JOY
-            ================================================== */}
-
-            {/* <div className="flex items-center gap-1 truncate max-w-[55%]">
-              <LuMapPin className="text-slate-400 shrink-0" />
-
-              <span className="truncate">{car?.location || "O'zbekiston"}</span>
-            </div> */}
-
-            {/* =================================================
-                SANA
-            ================================================== */}
-
+          {/* PASTKI QISM (SANA) */}
+          <div className="pt-2.5 border-t border-slate-700/60 flex justify-end items-center text-[11px] text-slate-400 font-medium">
             <div className="flex items-center gap-1 shrink-0">
               <LuCalendar className="text-slate-400" />
-
-              <span>{car?.date || "Bugun"}</span>
+              <span>{watch?.date || "Bugun"}</span>
             </div>
           </div>
         </div>
@@ -198,7 +151,7 @@ const CarCard = ({ car }) => {
       ====================================================== */}
 
       {showDetail && (
-        <CarDetailModal car={car} onClose={() => setShowDetail(false)} />
+        <CarDetailModal car={watch} onClose={() => setShowDetail(false)} />
       )}
     </>
   );

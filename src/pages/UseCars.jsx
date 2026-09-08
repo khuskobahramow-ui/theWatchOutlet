@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { db } from "../firebaseConfig"; // Firebase konfiguratsiyangiz yo'li
+import { db } from "../firebaseConfig";
 import {
   collection,
   onSnapshot,
@@ -14,10 +14,6 @@ export function useCars() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    // Firestore 'cars' kolleksiyasini vaqt bo'yicha saralab eshitish
-    // MUHIM: bot.js hujjatga faqat "updatedAt" yozadi, "createdAt" emas —
-    // shuning uchun orderBy shu maydon bo'yicha bo'lishi SHART, aks holda
-    // Firestore bu maydoni yo'q hujjatlarni natijadan butunlay tashlab yuboradi.
     const q = query(collection(db, "cars"), orderBy("updatedAt", "desc"));
 
     const unsubscribe = onSnapshot(
@@ -28,7 +24,6 @@ export function useCars() {
             id: doc.id,
             ...doc.data(),
           }))
-          // Faqat 'no-active' bo'lmagan (active bo'lgan) e'lonlarni ko'rsatish
           .filter((car) => car.status !== "no-active");
 
         setCars(carsData);
@@ -45,9 +40,6 @@ export function useCars() {
     return () => unsubscribe();
   }, []);
 
-  // Qo'lda yangilash tugmasi uchun — bir martalik qayta so'rov.
-  // (onSnapshot allaqachon real-time yangilanadi, bu faqat foydalanuvchi
-  // "refresh" tugmasini bosganda darhol qayta tekshirish uchun)
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -69,3 +61,5 @@ export function useCars() {
 
   return { cars, loading, refreshing, refresh };
 }
+
+export default useCars;

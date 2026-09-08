@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const CHANNEL_USERNAME = "dataBaseForTheWatchOutlet";
+const CHANNEL_USERNAME = "usedWatchesData";
 const PROXY_TIMEOUT = 20000;
 const NOT_PROVIDED = "";
 
-export const fetchCarsFromTelegram = async () => {
+export const fetchWatchesFromTelegram = async () => {
   try {
     const targetUrl = `https://t.me/s/${CHANNEL_USERNAME}`;
 
@@ -59,7 +59,7 @@ export const fetchCarsFromTelegram = async () => {
 
     console.log("Telegram postlari soni:", messages.length);
 
-    const parsedCars = [];
+    const parsedWatches = [];
 
     messages.forEach((msg, index) => {
       const textNode = msg.querySelector(".tgme_widget_message_text");
@@ -69,19 +69,22 @@ export const fetchCarsFromTelegram = async () => {
       }
 
       let name = "";
-      let carId = "";
-      let vin = "";
+      let watchId = "";
       let price = 0;
-      let year = 2024;
-      let mileage = 0;
+      let year = "2024";
       let location = "Toshkent sh.";
       let date = "Bugun";
       let status = "active"; // Sukut bo'yicha faol
 
-      let gearbox = NOT_PROVIDED;
-      let color = NOT_PROVIDED;
-      let engine = NOT_PROVIDED;
-      let fuel = NOT_PROVIDED;
+      // Soat xarakteristikalari
+      let brand = NOT_PROVIDED;
+      let model = NOT_PROVIDED;
+      let mechanism = NOT_PROVIDED;
+      let diameter = NOT_PROVIDED;
+      let caseMaterial = NOT_PROVIDED;
+      let strap = NOT_PROVIDED;
+      let waterResistance = NOT_PROVIDED;
+      let glass = NOT_PROVIDED;
 
       let instagram = NOT_PROVIDED;
       let youtube = NOT_PROVIDED;
@@ -144,15 +147,19 @@ export const fetchCarsFromTelegram = async () => {
 
         // ID
         else if (lowerLine.startsWith("id:")) {
-          carId = cleanLine.replace(/^id:/i, "").trim();
+          watchId = cleanLine.replace(/^id:/i, "").trim();
         }
         // NOMI
         else if (lowerLine.startsWith("nomi:")) {
           name = cleanLine.replace(/^nomi:/i, "").trim();
         }
-        // VIN
-        else if (lowerLine.startsWith("vin:")) {
-          vin = cleanLine.replace(/^vin:/i, "").trim();
+        // BREND
+        else if (lowerLine.startsWith("brend:")) {
+          brand = cleanLine.replace(/^brend:/i, "").trim();
+        }
+        // MODEL
+        else if (lowerLine.startsWith("model:")) {
+          model = cleanLine.replace(/^model:/i, "").trim();
         }
         // NARXI
         else if (lowerLine.startsWith("narxi:")) {
@@ -161,34 +168,36 @@ export const fetchCarsFromTelegram = async () => {
         }
         // YILI
         else if (lowerLine.startsWith("yili:")) {
-          const value = cleanLine.replace(/^yili:/i, "").replace(/[^\d]/g, "");
-          year = value ? parseInt(value, 10) : 2024;
+          year = cleanLine.replace(/^yili:/i, "").trim();
         }
-        // PROBEG
-        else if (lowerLine.startsWith("probeg:")) {
-          const value = cleanLine
-            .replace(/^probeg:/i, "")
-            .replace(/[^\d]/g, "");
-          mileage = value ? parseInt(value, 10) : 0;
+        // MEXANIZM
+        else if (lowerLine.startsWith("mexanizm:")) {
+          mechanism = cleanLine.replace(/^mexanizm:/i, "").trim();
         }
-        // KOROBKA
-        else if (lowerLine.startsWith("korobka:")) {
-          gearbox = cleanLine.replace(/^korobka:/i, "").trim();
+        // DIAMETR
+        else if (lowerLine.startsWith("diametr:")) {
+          diameter = cleanLine.replace(/^diametr:/i, "").trim();
         }
-        // RANGI
-        else if (lowerLine.startsWith("rangi:")) {
-          color = cleanLine.replace(/^rangi:/i, "").trim();
+        // KORPUS
+        else if (lowerLine.startsWith("korpus:")) {
+          caseMaterial = cleanLine.replace(/^korpus:/i, "").trim();
         }
-        // MOTOR
-        else if (lowerLine.startsWith("motor:")) {
-          engine = cleanLine.replace(/^motor:/i, "").trim();
+        // KAMAR
+        else if (lowerLine.startsWith("kamar:")) {
+          strap = cleanLine.replace(/^kamar:/i, "").trim();
         }
-        // YOQILG'I
+        // SUVDAN HIMOYA
         else if (
-          lowerLine.startsWith("yoqilgi:") ||
-          lowerLine.startsWith("yoqilg'i:")
+          lowerLine.startsWith("suvdan himoya:") ||
+          lowerLine.startsWith("suvdan_himoya:")
         ) {
-          fuel = cleanLine.replace(/^yoqilg'?i:/i, "").trim();
+          waterResistance = cleanLine
+            .substring(cleanLine.indexOf(":") + 1)
+            .trim();
+        }
+        // SHISHA
+        else if (lowerLine.startsWith("shisha:")) {
+          glass = cleanLine.replace(/^shisha:/i, "").trim();
         }
         // JOY
         else if (lowerLine.startsWith("joy:")) {
@@ -239,23 +248,25 @@ export const fetchCarsFromTelegram = async () => {
         }
       }
 
-      // FAQUAT 'no-active' BO'LMAGAN MAKNASHINALARNI QO'SHISH
+      // FAQUAT 'no-active' BO'LMAGAN SOATLARNI QO'SHISH
       if (name && status !== "no-active") {
-        const car = {
-          id: carId || `${index}-${name}`,
-          listingId: carId || "",
-          vin,
+        const watch = {
+          id: watchId || `${index}-${name}`,
+          listingId: watchId || "",
           name,
+          brand,
+          model,
           price,
           year,
-          mileage,
+          mechanism,
+          diameter,
+          caseMaterial,
+          strap,
+          waterResistance,
+          glass,
           location,
           date,
           status,
-          gearbox,
-          color,
-          engine,
-          fuel,
           instagram,
           youtube,
           description,
@@ -263,12 +274,12 @@ export const fetchCarsFromTelegram = async () => {
           image: images[0] || "",
         };
 
-        parsedCars.push(car);
+        parsedWatches.push(watch);
       }
     });
 
-    parsedCars.reverse();
-    return parsedCars;
+    parsedWatches.reverse();
+    return parsedWatches;
   } catch (error) {
     console.error("Telegramdan ma'lumot olishda xatolik:", error);
     return [];

@@ -15,6 +15,7 @@ import {
   LuHeart,
   LuPhoneCall,
   LuInfo,
+  LuGavel,
 } from "react-icons/lu";
 
 const Navbar = () => {
@@ -89,17 +90,15 @@ const Navbar = () => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 z-10000000 w-72 h-full bg-white shadow-2xl flex flex-col justify-between"
+              className="fixed top-0 right-0 z-10000000 w-72 h-full bg-[#112544] shadow-2xl flex flex-col justify-between"
             >
               <div>
                 {/* Header: Sarlavha va Yopish tugmasi */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-100">
-                  <span className="font-bold text-slate-800 text-base">
-                    Menyu
-                  </span>
+                <div className="flex items-center bg-[#0f192b] justify-between p-4 border-b border-slate-100">
+                  <span className="font-bold text-white text-base">Menu</span>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-1.5 rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-all cursor-pointer"
+                    className="p-1.5 rounded-full text-white hover:bg-slate-100 hover:text-slate-800 transition-all cursor-pointer"
                   >
                     <MdClose size={24} />
                   </button>
@@ -113,8 +112,8 @@ const Navbar = () => {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${
                         isActive
-                          ? "bg-blue-50 text-blue-600 font-semibold"
-                          : "text-slate-700 hover:bg-slate-50"
+                          ? "bg-[#0f192b] text-white font-semibold"
+                          : "text-slate-400 hover:bg-slate-50"
                       }`
                     }
                   >
@@ -123,17 +122,17 @@ const Navbar = () => {
                   </NavLink>
 
                   <NavLink
-                    to="/bozor"
+                    to="/auction"
                     onClick={() => setIsOpen(false)}
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${
                         isActive
-                          ? "bg-blue-50 text-blue-600 font-semibold"
-                          : "text-slate-700 hover:bg-slate-50"
+                          ? "bg-blue-50 text-white font-semibold"
+                          : "text-slate-400 hover:bg-slate-50"
                       }`
                     }
                   >
-                    <LuShoppingBag size={20} />
+                    <LuGavel size={20} />
                     <span>Bozor</span>
                   </NavLink>
 
@@ -143,8 +142,8 @@ const Navbar = () => {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${
                         isActive
-                          ? "bg-blue-50 text-blue-600 font-semibold"
-                          : "text-slate-700 hover:bg-slate-50"
+                          ? "bg-[#0f192b] text-white font-semibold"
+                          : "text-slate-400 hover:bg-slate-50"
                       }`
                     }
                   >
@@ -158,8 +157,8 @@ const Navbar = () => {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${
                         isActive
-                          ? "bg-blue-50 text-blue-600 font-semibold"
-                          : "text-slate-700 hover:bg-slate-50"
+                          ? "bg-blue-50 text-white font-semibold"
+                          : "text-slate-400 hover:bg-slate-50"
                       }`
                     }
                   >
@@ -171,40 +170,40 @@ const Navbar = () => {
 
               <div className=" flex flex-col gap-2.5 px-5 mb-5 ">
                 {/* Pastki qism: Bog'lanish */}
-                <div className=" border-t border-slate-100 bg-slate-50">
+                <div className="">
                   <a
                     href="https://t.me/avtotekuz"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#0f192b] text-white font-semibold text-sm active:scale-95 transition-all"
                   >
                     <FaTelegramPlane size={18} />
                     <span>Telegram</span>
                   </a>
                 </div>
                 {/* Pastki qism: Bog'lanish */}
-                <div className=" border-t border-slate-100 bg-slate-50">
+                <div className="">
                   <a
                     href="https://t.me/xusan728"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#0f192b] text-white font-semibold text-sm  active:scale-95 transition-all"
                   >
                     <FaTelegramPlane size={18} />
                     <span>Telegram Admin</span>
                   </a>
                 </div>
                 {/* Pastki qism: Bog'lanish */}
-                <div className=" border-t border-slate-100 bg-slate-50">
+                <div className="">
                   <a
                     href="https://www.instagram.com/avtotek.uz/"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#0f192b] text-white font-semibold text-sm active:scale-95 transition-all"
                   >
                     <FaInstagram size={18} />
                     <span>Instagram</span>
                   </a>
                 </div>
                 {/* Pastki qism: Bog'lanish */}
-                <div className=" border-t border-slate-100 bg-slate-50">
+                <div className="">
                   <a
                     href="tel:+998900770728"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#0f192b] text-white font-semibold text-sm  active:scale-95 transition-all"
                   >
                     <LuPhoneCall size={18} />
                     <span>+998-90-077-07-28</span>

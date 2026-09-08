@@ -6,7 +6,7 @@ import CarCard from "./CarCard";
 import SearchModal from "./SearchModal";
 import FilterModal from "./FilterModal";
 import { LuRefreshCw } from "react-icons/lu";
-import { useCars } from "./UseCars";
+import useCars from "./UseCars";
 import BottomNav from "./BottomNav";
 
 const Home = () => {
@@ -16,10 +16,9 @@ const Home = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Faqat auksion bo'lmagan barcha mahsulotlarni olish
-  const displayProducts = cars.filter(
-    (item) => !item.isAuction && item.type !== "auction"
-  );
+  const displayProducts = cars
+    ? cars.filter((item) => !item.isAuction && item.type !== "auction")
+    : [];
 
   return (
     <div>
@@ -33,7 +32,9 @@ const Home = () => {
 
       <div className="px-3 mt-2 pb-20">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-bold text-white">Barcha e'lonlar</h2>
+          <h2 className="text-lg font-bold text-white">
+            Barcha e'lonlar - Yangi Soatlar
+          </h2>
           <button
             type="button"
             onClick={refresh}
@@ -82,7 +83,6 @@ const Home = () => {
         cars={displayProducts}
       />
 
-      {/* Pastki Navigatsiya Menyusi */}
       <BottomNav />
     </div>
   );

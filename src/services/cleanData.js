@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 // Root papkadagi .env faylini yuklash
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
-// 1. FIREBASE ADMIN SDK ULANISHI (serviceAccountKey.json faylidan o'qish)
+// 1. FIREBASE ADMIN SDK ULANISHI
 let serviceAccount;
 
 try {
@@ -46,8 +46,9 @@ if (!BOT_TOKEN) {
 
 const bot = new Telegraf(BOT_TOKEN);
 
-// Kanallar ro'yxati va ID/usernamelari (AvtoTek)
-const MARKET_CHANNEL_ID = "@dataBaseForTheWatchOutlet"; // Bozor postlari kanali
+// Kanallar ro'yxati va ID/usernamelari
+const MARKET_CHANNEL_ID = "@dataBaseForTheWatchOutlet"; // Bozor / Yangi soatlar kanali
+const USED_CHANNEL_ID = "@usedWatchesData"; // Б/У soatlar kanali (Yangi qo'shildi)
 const AUCTION_CHANNEL_ID = "@auctionForTheWatchOutlet"; // Auksion kanali
 const INSTALLMENT_CHANNEL_ID = "@nasiyaForTheWatchOutlet"; // Nasiya savdo kanali
 
@@ -95,17 +96,22 @@ async function cleanupCollection(collectionName, channelId) {
 
 async function cleanupAllData() {
   try {
-    // 1. Bozor mashinalari
+    // 1. Yangi / Bozor soatlari (Eski va yangi kolleksiya nomi xavfsiz tozalanishi uchun)
+    await cleanupCollection("watches", MARKET_CHANNEL_ID);
     await cleanupCollection("cars", MARKET_CHANNEL_ID);
 
-    // 2. Auksion mashinalari
+    // 2. Б/У soatlar kanali va kolleksiyasi
+    await cleanupCollection("used_watches", USED_CHANNEL_ID);
+
+    // 3. Auksion soatlari
     await cleanupCollection("auctions", AUCTION_CHANNEL_ID);
 
-    // 3. Nasiya savdo mashinalari
+    // 4. Nasiya savdo soatlari
+    await cleanupCollection("installment_watches", INSTALLMENT_CHANNEL_ID);
     await cleanupCollection("installment_cars", INSTALLMENT_CHANNEL_ID);
 
     console.log(
-      "\n🎉🎉 Barcha (bozor + auksion + nasiya) test ma'lumotlari muvaffaqiyatli o'chirildi!"
+      "\n🎉🎉 Barcha (bozor + б/у + auksion + nasiya) test ma'lumotlari muvaffaqiyatli o'chirildi!"
     );
   } catch (error) {
     console.error("❌ O'chirishda xatolik yuz berdi:", error);

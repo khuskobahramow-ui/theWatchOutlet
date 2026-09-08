@@ -4,30 +4,32 @@ import {
   LuX,
   LuMapPin,
   LuCalendar,
-  LuGauge,
-  LuFuel,
+  LuWatch,
+  LuMaximize,
+  LuShieldCheck,
   LuPalette,
   LuSettings2,
   LuChevronLeft,
   LuChevronRight,
   LuExpand,
+  LuDroplet,
 } from "react-icons/lu";
-import { FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaInstagram, FaYoutube, FaTelegramPlane } from "react-icons/fa";
 import PriceTag from "../comps/PriceTag";
 
 const StatChip = ({ icon: Icon, label, value }) => {
   const hasValue = value && value !== "" && value !== "-";
   return (
-    <div className="bg-[#0f192b] rounded-2xl p-3 flex flex-col gap-1.5 min-w-0 shadow-sm border border-slate-100">
-      <div className="flex items-center gap-1.5 text-white">
-        {Icon && <Icon size={14} />}
+    <div className="bg-[#0f192b] rounded-2xl p-3 flex flex-col gap-1.5 min-w-0 shadow-sm border border-slate-700/60">
+      <div className="flex items-center gap-1.5 text-slate-400">
+        {Icon && <Icon size={14} className="text-amber-400" />}
         <span className="text-[10px] font-semibold uppercase tracking-wide">
           {label}
         </span>
       </div>
       <span
         className={`text-sm font-bold truncate ${
-          hasValue ? "text-white" : "text-white font-medium"
+          hasValue ? "text-white" : "text-slate-500 font-medium"
         }`}
       >
         {hasValue ? value : "Kiritilmagan"}
@@ -83,7 +85,7 @@ const FullscreenGallery = ({ images, startIndex, onClose }) => {
         </button>
       </div>
 
-      {/* ASOSIY KATTA RASM (DRAG/SWIPE ISHLAYDI) */}
+      {/* ASOSIY KATTA RASM */}
       <div
         className="w-full flex-1 flex items-center justify-center p-2 relative overflow-hidden"
         onClick={(e) => e.stopPropagation()}
@@ -147,13 +149,13 @@ const FullscreenGallery = ({ images, startIndex, onClose }) => {
   );
 };
 
-/* 2. ASOSIY CAR DETAIL MODAL */
-const CarDetailModal = ({ car, onClose }) => {
+/* 2. ASOSIY WATCH DETAIL MODAL */
+const CarDetailModal = ({ car: watch, onClose }) => {
   const images =
-    car?.images && car.images.length > 0
-      ? car.images
-      : car?.image
-      ? [car.image]
+    watch?.images && watch.images.length > 0
+      ? watch.images
+      : watch?.image
+      ? [watch.image]
       : [];
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -167,25 +169,23 @@ const CarDetailModal = ({ car, onClose }) => {
     };
   }, []);
 
-  if (!car) return null;
+  if (!watch) return null;
 
-  const instagramUrl = car.instagram || car.Instagram || "";
-  const youtubeUrl = car.youtube || car.Youtube || car.YouTube || "";
+  const instagramUrl = watch.instagram || watch.Instagram || "";
+  const youtubeUrl = watch.youtube || watch.Youtube || watch.YouTube || "";
+  const telegramContact = watch.telegram || watch.contact || "";
 
   const goNext = () => setActiveIndex((prev) => (prev + 1) % images.length);
   const goPrev = () =>
     setActiveIndex((prev) => (prev - 1 + images.length) % images.length);
 
-  // SWIPE VA CLICK HARAKATLARINI AJRATISH MANTIQLARI
   const handleDragEnd = (event, info) => {
-    const swipeThreshold = 40; // Surish masofasi (piksel)
-
+    const swipeThreshold = 40;
     if (info.offset.x < -swipeThreshold) {
-      goNext(); // Chapga surilsa -> Keyingi rasm
+      goNext();
     } else if (info.offset.x > swipeThreshold) {
-      goPrev(); // O'ngga surilsa -> Oldingi rasm
+      goPrev();
     } else {
-      // Agar deyarli surilmagan bo'lsa (shunchaki bosilgan bo'lsa) -> Galereyani ochish
       setShowGallery(true);
     }
   };
@@ -201,13 +201,13 @@ const CarDetailModal = ({ car, onClose }) => {
       >
         <div className="w-full min-h-full flex flex-col relative pb-10">
           {/* RASMLAR CONTAINER */}
-          <div className="relative w-full h-[36vh] bg-slate-900 shrink-0 overflow-hidden">
+          <div className="relative w-full h-[38vh] bg-slate-900 shrink-0 overflow-hidden">
             {images.length > 0 ? (
               <div className="w-full h-full relative flex items-center justify-center">
                 <motion.img
-                  key={`main-car-img-${activeIndex}`}
+                  key={`main-watch-img-${activeIndex}`}
                   src={images[activeIndex]}
-                  alt={car.name}
+                  alt={watch.name || watch.brand}
                   drag="x"
                   dragConstraints={{ left: 0, right: 0 }}
                   dragElastic={0.15}
@@ -282,25 +282,43 @@ const CarDetailModal = ({ car, onClose }) => {
           <div className="px-4 pt-5 bg-[#112544] mb-[30px] rounded-t-3xl relative z-10 -mt-4 flex-1">
             <div className="flex items-start justify-between gap-3 mb-1">
               <h2 className="text-2xl font-extrabold text-white leading-tight">
-                {car.name || "Avtomobil"}
+                {watch.name ||
+                  `${watch.brand || ""} ${watch.model || ""}`.trim() ||
+                  "Soat"}
               </h2>
             </div>
-            {car.listingId && (
-              <div className="text-[11px] text-white font-mono mb-1">
-                {car.listingId}
+            {watch.listingId && (
+              <div className="text-[11px] text-amber-400 font-mono mb-1">
+                ID: #{watch.listingId}
               </div>
             )}
-            <PriceTag usd={car.price} size="lg" className="mb-4" />
+            <PriceTag usd={watch.price} size="lg" className="mb-4" />
 
-            {(instagramUrl || youtubeUrl) && (
-              <div className="flex gap-2 mb-5">
+            {/* IJTIMOIY TARMOQLAR VA BOG'LANISH */}
+            {(instagramUrl || youtubeUrl || telegramContact) && (
+              <div className="flex flex-wrap gap-2 mb-5">
+                {telegramContact && (
+                  <a
+                    href={
+                      telegramContact.startsWith("http")
+                        ? telegramContact
+                        : `https://t.me/${telegramContact.replace("@", "")}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-sky-500 text-white text-xs font-semibold active:scale-95 transition-transform shadow-md cursor-pointer"
+                  >
+                    <FaTelegramPlane size={18} /> Telegram
+                  </a>
+                )}
                 {instagramUrl && (
                   <a
                     href={instagramUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 text-white text-xs font-semibold active:scale-95 transition-transform shadow-md cursor-pointer"
+                    className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 text-white text-xs font-semibold active:scale-95 transition-transform shadow-md cursor-pointer"
                   >
                     <FaInstagram size={18} /> Instagram
                   </a>
@@ -311,7 +329,7 @@ const CarDetailModal = ({ car, onClose }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-red-600 text-white text-xs font-semibold active:scale-95 transition-transform shadow-md cursor-pointer"
+                    className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-3 rounded-2xl bg-red-600 text-white text-xs font-semibold active:scale-95 transition-transform shadow-md cursor-pointer"
                   >
                     <FaYoutube size={18} /> Youtube
                   </a>
@@ -319,49 +337,61 @@ const CarDetailModal = ({ car, onClose }) => {
               </div>
             )}
 
+            {/* SOAT XUSUSIYATLARI */}
             <div className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">
-              Xususiyatlari
+              Soat Xususiyatlari
             </div>
             <div className="grid grid-cols-2 gap-2.5 mb-5">
-              <StatChip icon={LuCalendar} label="Yili" value={car.year} />
-              <StatChip
-                icon={LuGauge}
-                label="Probeg"
-                value={
-                  car.mileage
-                    ? `${Number(car.mileage).toLocaleString()} km`
-                    : ""
-                }
-              />
+              <StatChip icon={LuWatch} label="Brend" value={watch.brand} />
+              <StatChip icon={LuSettings2} label="Model" value={watch.model} />
               <StatChip
                 icon={LuSettings2}
-                label="Korobka"
-                value={car.gearbox}
+                label="Mexanizm"
+                value={watch.mechanism}
               />
-              <StatChip icon={LuPalette} label="Rangi" value={car.color} />
-              <StatChip icon={LuSettings2} label="Motor" value={car.engine} />
-              <StatChip icon={LuFuel} label="Yoqilg'i" value={car.fuel} />
-              <StatChip icon={LuSettings2} label="VIN raqami" value={car.vin} />
+              <StatChip
+                icon={LuMaximize}
+                label="Diametr"
+                value={watch.diameter}
+              />
+              <StatChip
+                icon={LuShieldCheck}
+                label="Korpus"
+                value={watch.caseMaterial || watch.case}
+              />
+              <StatChip
+                icon={LuPalette}
+                label="Kamar / Braslet"
+                value={watch.strapMaterial || watch.strap}
+              />
+              <StatChip icon={LuPalette} label="Shisha" value={watch.glass} />
+              <StatChip
+                icon={LuDroplet}
+                label="Suvdan himoya"
+                value={watch.waterResistance}
+              />
             </div>
 
-            <div className="flex items-center justify-between text-sm text-slate-500 mb-5 px-1">
+            {/* MANZIL VA SANA */}
+            <div className="flex items-center justify-between text-sm text-slate-400 mb-5 px-1">
+              {/* <div className="flex items-center gap-1.5">
+                <LuMapPin size={16} className="text-amber-400" />
+                <span>{watch.location || "O'zbekiston"}</span>
+              </div> */}
               <div className="flex items-center gap-1.5">
-                <LuMapPin size={16} className="text-slate-400" />
-                <span>{car.location || "O'zbekiston"}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <LuCalendar size={16} className="text-slate-400" />
-                <span>{car.date || "Bugun"}</span>
+                <LuCalendar size={16} className="text-amber-400" />
+                <span>{watch.date || "Bugun"}</span>
               </div>
             </div>
 
-            {car.description && (
+            {/* TAVSIF / DESCRIPTION */}
+            {watch.description && (
               <div className="mb-10">
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">
                   Tavsif
                 </div>
-                <p className="text-sm text-slate-700 leading-relaxed bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm">
-                  {car.description}
+                <p className="text-sm text-slate-200 leading-relaxed bg-[#0f192b] p-3.5 rounded-2xl border border-slate-700/60 shadow-sm">
+                  {watch.description}
                 </p>
               </div>
             )}

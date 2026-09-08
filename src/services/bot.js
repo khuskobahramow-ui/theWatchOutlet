@@ -30,7 +30,7 @@ if (!BOT_TOKEN) {
 const bot = new Telegraf(BOT_TOKEN);
 
 // Post matnini pars (tahlil) qilish funksiyasi
-function parseCarPost(text, messageId) {
+function parseWatchPost(text, messageId) {
   if (!text) return null;
 
   const lines = text.split("\n");
@@ -41,6 +41,7 @@ function parseCarPost(text, messageId) {
 
   let isAuction = false;
   let isInstallment = false;
+  let isUsed = false;
   let type = "market";
 
   const images = [];
@@ -58,6 +59,9 @@ function parseCarPost(text, messageId) {
       } else if (typeValue === "installment") {
         isInstallment = true;
         type = "installment";
+      } else if (typeValue === "used") {
+        isUsed = true;
+        type = "used";
       } else {
         type = "market";
       }
@@ -73,15 +77,18 @@ function parseCarPost(text, messageId) {
       type = "installment";
     }
 
+    if (trimmedLine.includes("⌚ Б/У SOAT POSTI ⌚")) {
+      isUsed = true;
+      type = "used";
+    }
+
     // Umumiy va Nasiya maydonlari
     if (trimmedLine.startsWith("ID:"))
-      data.carId = trimmedLine.replace("ID:", "").trim();
+      data.watchId = trimmedLine.replace("ID:", "").trim();
     if (trimmedLine.startsWith("Holat:"))
       data.status = trimmedLine.replace("Holat:", "").trim();
     if (trimmedLine.startsWith("Nomi:"))
       data.name = trimmedLine.replace("Nomi:", "").trim();
-    if (trimmedLine.startsWith("VIN:"))
-      data.vin = trimmedLine.replace("VIN:", "").trim();
 
     // Narx va Nasiya hisob-kitoblari
     if (trimmedLine.startsWith("Narxi:"))
@@ -107,19 +114,25 @@ function parseCarPost(text, messageId) {
     if (trimmedLine.startsWith("Tugash vaqti:"))
       data.endTime = trimmedLine.replace("Tugash vaqti:", "").trim();
 
-    // Mashina xarakteristikalari
+    // SOAT XARAKTERISTIKALARI
+    if (trimmedLine.startsWith("Brend:"))
+      data.brand = trimmedLine.replace("Brend:", "").trim();
+    if (trimmedLine.startsWith("Model:"))
+      data.model = trimmedLine.replace("Model:", "").trim();
     if (trimmedLine.startsWith("Yili:"))
       data.year = trimmedLine.replace("Yili:", "").trim();
-    if (trimmedLine.startsWith("Probeg:"))
-      data.mileage = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
-    if (trimmedLine.startsWith("Korobka:"))
-      data.gearbox = trimmedLine.replace("Korobka:", "").trim();
-    if (trimmedLine.startsWith("Rangi:"))
-      data.color = trimmedLine.replace("Rangi:", "").trim();
-    if (trimmedLine.startsWith("Motor:"))
-      data.engine = trimmedLine.replace("Motor:", "").trim();
-    if (trimmedLine.startsWith("Yoqilgi:"))
-      data.fuel = trimmedLine.replace("Yoqilgi:", "").trim();
+    if (trimmedLine.startsWith("Mexanizm:"))
+      data.mechanism = trimmedLine.replace("Mexanizm:", "").trim();
+    if (trimmedLine.startsWith("Diametr:"))
+      data.diameter = trimmedLine.replace("Diametr:", "").trim();
+    if (trimmedLine.startsWith("Korpus:"))
+      data.caseMaterial = trimmedLine.replace("Korpus:", "").trim();
+    if (trimmedLine.startsWith("Kamar:"))
+      data.strap = trimmedLine.replace("Kamar:", "").trim();
+    if (trimmedLine.startsWith("Suvdan himoya:"))
+      data.waterResistance = trimmedLine.replace("Suvdan himoya:", "").trim();
+    if (trimmedLine.startsWith("Shisha:"))
+      data.glass = trimmedLine.replace("Shisha:", "").trim();
     if (trimmedLine.startsWith("Joy:"))
       data.location = trimmedLine.replace("Joy:", "").trim();
     if (trimmedLine.startsWith("Sana:"))
@@ -142,6 +155,7 @@ function parseCarPost(text, messageId) {
 
   data.isAuction = isAuction;
   data.isInstallment = isInstallment;
+  data.isUsed = isUsed;
   data.type = type;
   data.images = images;
 
@@ -157,52 +171,58 @@ bot.on(["message", "channel_post", "edited_channel_post"], async (ctx) => {
     // Text mavjud emasligini tekshirish
     if (!text || !text.trim()) return;
 
-    const carData = parseCarPost(text, post.message_id);
+    const watchData = parseWatchPost(text, post.message_id);
 
-    // Baza uchun validatsiya: Nomi va Narxlaridan biri ham bo'lmasa o'tkazib yuboriladi
+    // Baza uchun validatsiya
     if (
-      !carData ||
-      (!carData.name &&
-        !carData.price &&
-        !carData.startingPrice &&
-        !carData.totalPrice)
+      !watchData ||
+      (!watchData.name &&
+        !watchData.price &&
+        !watchData.startingPrice &&
+        !watchData.totalPrice)
     ) {
       console.log(
-        `⚠️ Bo'sh yoki avto ma'lumotiga ega bo'lmagan post e'tiborsiz qoldirildi (ID: ${post.message_id})`
+        `⚠️ Bo'sh yoki soat ma'lumotiga ega bo'lmagan post e'tiborsiz qoldirildi (ID: ${post.message_id})`
       );
       return;
     }
 
-    if (carData.isAuction) {
+    if (watchData.isAuction) {
       await db
         .collection("auctions")
         .doc(`post_${post.message_id}`)
-        .set(carData, { merge: true });
-      console.log(`🔥 Auksion saqlandi: post_${post.message_id}`);
-    } else if (carData.isInstallment) {
+        .set(watchData, { merge: true });
+      console.log(`🔥 Auksion soat saqlandi: post_${post.message_id}`);
+    } else if (watchData.isInstallment) {
       await db
-        .collection("installment_cars")
+        .collection("installment_watches")
         .doc(`post_${post.message_id}`)
-        .set(carData, { merge: true });
-      console.log(`🏦 Nasiya mashina saqlandi: post_${post.message_id}`);
+        .set(watchData, { merge: true });
+      console.log(`🏦 Nasiya soat saqlandi: post_${post.message_id}`);
+    } else if (watchData.isUsed) {
+      await db
+        .collection("used_watches")
+        .doc(`post_${post.message_id}`)
+        .set(watchData, { merge: true });
+      console.log(`⌚ Б/У soat saqlandi: post_${post.message_id}`);
     } else {
       await db
-        .collection("cars")
+        .collection("watches")
         .doc(`post_${post.message_id}`)
-        .set(carData, { merge: true });
-      console.log(`🚗 Oddiy mashina saqlandi: post_${post.message_id}`);
+        .set(watchData, { merge: true });
+      console.log(`⌚ Oddiy (Yangi) soat saqlandi: post_${post.message_id}`);
     }
   } catch (error) {
     console.error("❌ Firestore-ga yozishda xato:", error);
   }
 });
 
-// Render uchun soxta HTTP server (Port o'chib qolmasligi uchun)
+// Render uchun soxta HTTP server
 const PORT = process.env.PORT || 10000;
 http
   .createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("AvtoTek Bot active!");
+    res.end("The Watch Outlet Bot active!");
   })
   .listen(PORT, () => {
     console.log(`🌐 Dummy HTTP server ${PORT}-portda ishlamoqda...`);

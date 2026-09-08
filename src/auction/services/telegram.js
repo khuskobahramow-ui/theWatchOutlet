@@ -1,5 +1,5 @@
 // Test rejimini boshqarish: true bo'lsa brauzerda test qiladi, false bo'lsa haqiqiy Telegram WebApp ishlaydi
-const IS_TEST_MODE = true;
+const IS_TEST_MODE = false;
 
 // Test foydalanuvchisi obyektining namuna ko'rinishi
 const TEST_USER = {

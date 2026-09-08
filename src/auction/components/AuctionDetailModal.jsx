@@ -297,7 +297,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 bg-[#f8fafc] w-full h-full overflow-y-auto"
+        className="fixed inset-0 z-50 bg-[##0f192b] w-full h-full overflow-y-auto"
         initial={{ opacity: 0, y: "100%" }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: "100%" }}
@@ -352,14 +352,14 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
           </div>
 
           {/* CONTENT SECTION */}
-          <div className="px-4 pt-5 bg-[#f8fafc] rounded-t-3xl relative z-10 -mt-4 flex-1">
-            <h2 className="text-2xl font-extrabold text-slate-900 leading-tight mb-1">
+          <div className="px-4 pt-5 bg-[#112544] mb-[30px] rounded-t-3xl relative z-10 -mt-4 flex-1">
+            <h2 className="text-2xl font-extrabold text-white leading-tight mb-1">
               {auction.title || auction.name || "Auksion Avtomobili"}
             </h2>
 
             {/* ASOSIY NARX VA UZS QIYMATI */}
             <div className="mb-3">
-              <div className="text-blue-600 font-black text-3xl leading-none">
+              <div className="text-white font-black text-3xl leading-none">
                 ${currentPrice.toLocaleString()}
               </div>
               <div className="text-slate-400 font-bold text-xs mt-1">
@@ -369,13 +369,13 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
 
             {/* OXIRGI STAVKA EGISI KO'RINIShI */}
             {auction.lastBidder && (
-              <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-2xl flex items-center justify-between mb-4 text-xs">
+              <div className="bg-[#0f192b] border border-emerald-400 p-3 rounded-2xl flex items-center justify-between mb-4 text-xs">
                 <div className="flex items-center gap-2 min-w-0">
                   {auction.lastBidder.photoUrl ? (
                     <img
                       src={auction.lastBidder.photoUrl}
                       alt=""
-                      className="w-9 h-9 rounded-full object-cover shrink-0 border border-emerald-200"
+                      className="w-9 h-9 rounded-full object-cover shrink-0 border border-emerald-400"
                     />
                   ) : (
                     <div className="w-9 h-9 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center shrink-0">
@@ -383,21 +383,21 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                     </div>
                   )}
                   <div className="min-w-0">
-                    <span className="text-slate-500 block text-[10px]">
+                    <span className="text-slate-300 block text-[10px]">
                       Oxirgi stavka egasi
                     </span>
-                    <strong className="text-slate-800 font-semibold truncate block">
+                    <strong className="text-white font-semibold truncate block">
                       {auction.lastBidder.userName}
                     </strong>
                     {auction.lastBidder.userId && (
-                      <span className="text-slate-400 font-mono text-[9px] block truncate">
+                      <span className="text-slate-300 font-mono text-[9px] block truncate">
                         ID: {auction.lastBidder.userId}
                       </span>
                     )}
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className="text-emerald-700 font-extrabold text-sm block">
+                  <span className="text-emerald-500 font-extrabold text-sm block">
                     ${auction.lastBidder.amount?.toLocaleString()}
                   </span>
                   <span className="text-emerald-600/80 font-bold text-[10px] block">
@@ -412,10 +412,8 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
             )}
 
             {/* TAYMER */}
-            <div className="bg-indigo-50 p-3.5 rounded-2xl border border-indigo-100 flex justify-between items-center text-sm mb-4 shadow-sm">
-              <span className="text-indigo-900 font-semibold">
-                Tugash vaqti:
-              </span>
+            <div className="bg-[#0f192b] p-3.5 rounded-2xl border border-indigo-100 flex justify-between items-center text-sm mb-4 shadow-sm">
+              <span className="text-white font-semibold">Tugash vaqti:</span>
               <CountdownTimer endTime={auction.endTime} />
             </div>
 
@@ -511,18 +509,18 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                 onSubmit={handleBidSubmit}
                 className="space-y-2 pt-3 border-t mb-[30px] border-slate-200"
               >
-                <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold mb-2">
+                <div className="flex items-center gap-1.5 text-xs text-emerald-500 font-bold mb-2">
                   <FaCircleCheck size={16} /> Akkountingiz auksion uchun
                   tasdiqlangan
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <label className="text-[11px] font-bold text-slate-500 uppercase">
+                  <label className="text-[11px] font-bold text-slate-400 uppercase">
                     O'zingiz stavka kiriting (Minimal: ${minValidBid}):
                   </label>
                   {/* INPUT USTIDAGI UZS KORINIShI */}
                   {customBid !== "" && !isNaN(customBid) && (
-                    <span className="text-[11px] font-extrabold text-blue-600 animate-pulse">
+                    <span className="text-[11px] font-bold text-white ">
                       ≈ {(Number(customBid) * USD_RATE).toLocaleString()} UZS
                     </span>
                   )}
@@ -534,11 +532,11 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                     placeholder={`masalan: ${minValidBid}`}
                     value={customBid}
                     onChange={(e) => setCustomBid(e.target.value)}
-                    className={`flex-1 p-3 rounded-xl border-2 font-bold text-base outline-none transition-all ${
+                    className={`flex-1 p-3 rounded-xl border-2 bg-white font-bold text-base outline-none transition-all ${
                       customBid === ""
                         ? "border-slate-200"
                         : isValidBid
-                        ? "border-emerald-500 text-emerald-600 bg-emerald-50/30"
+                        ? "border-emerald-500 text-emerald-600 bg-white"
                         : "border-red-500 text-red-600 bg-red-50/30"
                     }`}
                   />
@@ -548,7 +546,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                     className={`px-5 py-3 font-bold rounded-xl text-white transition-all ${
                       isValidBid
                         ? "bg-emerald-600 hover:bg-emerald-700 active:scale-95 shadow-lg shadow-emerald-600/30"
-                        : "bg-slate-300 cursor-not-allowed"
+                        : "bg-slate-500 cursor-not-allowed"
                     }`}
                   >
                     {loading ? "..." : "Yuborish"}
@@ -580,75 +578,69 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
             )}
 
             {/* XUSUSIYATLAR GRIDI */}
-            <div className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">
+            <div className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-2">
               Xususiyatlari
             </div>
             <div className="grid grid-cols-2 gap-2.5 mb-5">
-              <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuCalendar className="text-blue-500 shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
+                <LuCalendar className="text-white shrink-0" size={16} />
                 <div className="truncate">
-                  <span className="text-slate-400 block text-[10px]">Yili</span>
-                  <strong className="text-slate-800">
-                    {auction.year || "-"}
-                  </strong>
+                  <span className="text-slate-300 block text-[10px]">Yili</span>
+                  <strong className="text-white">{auction.year || "-"}</strong>
                 </div>
               </div>
 
-              <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuGauge className="text-blue-500 shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
+                <LuGauge className="text-white shrink-0" size={16} />
                 <div className="truncate">
-                  <span className="text-slate-400 block text-[10px]">
+                  <span className="text-slate-300 block text-[10px]">
                     Probeg
                   </span>
-                  <strong className="text-slate-800">
+                  <strong className="text-white">
                     {auction.mileage ? `${auction.mileage} km` : "-"}
                   </strong>
                 </div>
               </div>
 
-              <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuSettings2 className="text-blue-500 shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
+                <LuSettings2 className="text-white shrink-0" size={16} />
                 <div className="truncate">
-                  <span className="text-slate-400 block text-[10px]">
+                  <span className="text-slate-300 block text-[10px]">
                     Korobka
                   </span>
-                  <strong className="text-slate-800">
+                  <strong className="text-white">
                     {auction.gearbox || "-"}
                   </strong>
                 </div>
               </div>
 
-              <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuFuel className="text-blue-500 shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
+                <LuFuel className="text-white shrink-0" size={16} />
                 <div className="truncate">
                   <span className="text-slate-400 block text-[10px]">
                     Yoqilg'i
                   </span>
-                  <strong className="text-slate-800">
-                    {auction.fuel || "-"}
-                  </strong>
+                  <strong className="text-white">{auction.fuel || "-"}</strong>
                 </div>
               </div>
 
-              <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuPalette className="text-blue-500 shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
+                <LuPalette className="text-white shrink-0" size={16} />
                 <div className="truncate">
-                  <span className="text-slate-400 block text-[10px]">
+                  <span className="text-slate-300 block text-[10px]">
                     Rangi
                   </span>
-                  <strong className="text-slate-800">
-                    {auction.color || "-"}
-                  </strong>
+                  <strong className="text-white">{auction.color || "-"}</strong>
                 </div>
               </div>
 
-              <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuTrendingUp className="text-blue-500 shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
+                <LuTrendingUp className="text-white shrink-0" size={16} />
                 <div className="truncate">
-                  <span className="text-slate-400 block text-[10px]">
+                  <span className="text-slate-300 block text-[10px]">
                     Stavka qadami
                   </span>
-                  <strong className="text-slate-800">
+                  <strong className="text-white">
                     {auction.bidStep ? `$${auction.bidStep}` : "-"}
                   </strong>
                 </div>

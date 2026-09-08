@@ -51,7 +51,7 @@ const Home = () => {
             {[1, 2, 3, 4].map((n) => (
               <div
                 key={n}
-                className="h-64 bg-slate-200 animate-pulse rounded-2xl"
+                className="h-64 bg-[#0f192b] animate-pulse rounded-2xl"
               />
             ))}
           </div>

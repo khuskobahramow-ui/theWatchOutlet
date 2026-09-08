@@ -84,7 +84,7 @@ const AuctionPage = () => {
           {[1, 2].map((n) => (
             <div
               key={n}
-              className="bg-white rounded-2xl h-64 animate-pulse border p-3"
+              className="bg-[#0f192b] rounded-2xl h-64 animate-pulse border p-3"
             />
           ))}
         </div>

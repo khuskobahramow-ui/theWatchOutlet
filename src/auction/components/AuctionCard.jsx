@@ -58,7 +58,7 @@ const AuctionCard = ({ item, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="bg-[#0f192b] rounded-2xl overflow-hidden border-2 border-indigo-500/30 shadow-sm hover:shadow-md transition-all relative flex flex-col justify-between cursor-pointer active:scale-98"
+      className="bg-[#0f192b] rounded-2xl overflow-hidden border-[2px] border-[#657591] shadow-sm hover:shadow-md transition-all relative flex flex-col justify-between cursor-pointer active:scale-98"
     >
       <div className="relative w-full h-44 bg-slate-100">
         <img

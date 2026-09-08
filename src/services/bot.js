@@ -3,25 +3,21 @@ import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import http from "http";
 
-// Firebase Admin SDK ni xavfsiz konfiguratsiya qilish
+// 1. Firebase Admin Sozlanmasi
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
   ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
   : null;
 
 if (!serviceAccount) {
-  console.error("❌ Firebase Service Account kaliti topilmadi!");
+  console.error("❌ Firebase Service Account topilmadi!");
   process.exit(1);
 }
 
-initializeApp({
-  credential: cert(serviceAccount),
-});
-
+initializeApp({ credential: cert(serviceAccount) });
 const db = getFirestore();
 
-// Bot tokenni .env yoki muhit o'zgaruvchisidan olish
+// 2. Telegram Bot Sozlanmasi
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-
 if (!BOT_TOKEN) {
   console.error("❌ TELEGRAM_BOT_TOKEN topilmadi!");
   process.exit(1);
@@ -29,12 +25,13 @@ if (!BOT_TOKEN) {
 
 const bot = new Telegraf(BOT_TOKEN);
 
-// Post matnini pars (tahlil) qilish funksiyasi
+// 3. Hub Post Parser Funksiyasi
 function parseWatchPost(text, messageId) {
   if (!text) return null;
 
   const lines = text.split("\n");
   const data = {
+    id: `post_${messageId}`,
     messageId: messageId,
     updatedAt: new Date(),
   };
@@ -48,18 +45,20 @@ function parseWatchPost(text, messageId) {
 
   lines.forEach((line) => {
     const trimmedLine = line.trim();
-    if (!trimmedLine) return;
+    if (!trimmedLine || trimmedLine.startsWith("---")) return;
 
-    // Type ni aniqlash
-    if (trimmedLine.toLowerCase().startsWith("type:")) {
-      const typeValue = trimmedLine.split(":")[1].trim().toLowerCase();
-      if (typeValue === "auction") {
+    const lowerLine = trimmedLine.toLowerCase();
+
+    // TYPE
+    if (lowerLine.startsWith("type:")) {
+      const typeVal = trimmedLine.split(":")[1].trim().toLowerCase();
+      if (typeVal === "auction") {
         isAuction = true;
         type = "auction";
-      } else if (typeValue === "installment") {
+      } else if (typeVal === "installment") {
         isInstallment = true;
         type = "installment";
-      } else if (typeValue === "used") {
+      } else if (typeVal === "used") {
         isUsed = true;
         type = "used";
       } else {
@@ -67,88 +66,107 @@ function parseWatchPost(text, messageId) {
       }
     }
 
-    if (trimmedLine.includes("🔥 AUKSION POSTI 🔥")) {
+    if (trimmedLine.includes("🔥 AUCTION POST 🔥")) {
       isAuction = true;
       type = "auction";
     }
-
-    if (trimmedLine.includes("🏦 NASIYA POSTI 🏦")) {
+    if (trimmedLine.includes("🏦 INSTALLMENT POST 🏦")) {
       isInstallment = true;
       type = "installment";
     }
-
-    if (trimmedLine.includes("⌚ Б/У SOAT POSTI ⌚")) {
+    if (trimmedLine.includes("🔄 USED WATCH POST 🔄")) {
       isUsed = true;
       type = "used";
     }
 
-    // Umumiy va Nasiya maydonlari
-    if (trimmedLine.startsWith("ID:"))
-      data.watchId = trimmedLine.replace("ID:", "").trim();
-    if (trimmedLine.startsWith("Holat:"))
-      data.status = trimmedLine.replace("Holat:", "").trim();
-    if (trimmedLine.startsWith("Nomi:"))
-      data.name = trimmedLine.replace("Nomi:", "").trim();
+    // DATA FIELDS
+    if (lowerLine.startsWith("id:"))
+      data.watchId = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (lowerLine.startsWith("status:"))
+      data.status = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim()
+        .toLowerCase();
+    if (lowerLine.startsWith("brand:"))
+      data.brand = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (lowerLine.startsWith("card title:"))
+      data.name = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (
+      lowerLine.startsWith("ref. code / model:") ||
+      lowerLine.startsWith("ref. code:")
+    ) {
+      data.model = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    }
 
-    // Narx va Nasiya hisob-kitoblari
-    if (trimmedLine.startsWith("Narxi:"))
+    // PRICES
+    if (lowerLine.startsWith("price:"))
       data.price = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
-    if (trimmedLine.startsWith("Umumiy narx:"))
+    if (lowerLine.startsWith("total price:")) {
       data.totalPrice = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
-    if (trimmedLine.startsWith("Minimal boshlang'ich to'lov:"))
+      data.price = data.totalPrice;
+    }
+    if (lowerLine.startsWith("start price:")) {
+      data.startingPrice = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
+      data.price = data.startingPrice;
+    }
+    if (lowerLine.startsWith("bid step:"))
+      data.bidStep = Number(trimmedLine.replace(/[^0-9]/g, "")) || 50;
+    if (lowerLine.startsWith("end time:"))
+      data.endTime = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+
+    // INSTALLMENT
+    if (lowerLine.startsWith("min. down payment:"))
       data.minDownPayment = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
-    if (trimmedLine.startsWith("Yillik foiz:"))
+    if (lowerLine.startsWith("annual rate:"))
       data.annualInterest = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
-    if (trimmedLine.startsWith("Minimal muddat:"))
+    if (lowerLine.startsWith("min. term:"))
       data.minPeriod = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
-    if (trimmedLine.startsWith("Maksimal muddat:"))
+    if (lowerLine.startsWith("max. term:"))
       data.maxPeriod = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
 
-    // Auksion maydonlari
-    if (trimmedLine.startsWith("Boshlang'ich narx:")) {
-      data.startingPrice = Number(trimmedLine.replace(/[^0-9]/g, "")) || 0;
-      data.currentPrice = data.startingPrice;
-    }
-    if (trimmedLine.startsWith("Stavka qadami:"))
-      data.bidStep = Number(trimmedLine.replace(/[^0-9]/g, "")) || 100;
-    if (trimmedLine.startsWith("Tugash vaqti:"))
-      data.endTime = trimmedLine.replace("Tugash vaqti:", "").trim();
+    // SPECS
+    if (lowerLine.startsWith("case material:"))
+      data.caseMaterial = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+    if (lowerLine.startsWith("mechanism:"))
+      data.mechanism = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+    if (lowerLine.startsWith("glass:"))
+      data.glass = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (lowerLine.startsWith("bracelet/strap:"))
+      data.strap = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (lowerLine.startsWith("gender:"))
+      data.gender = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (lowerLine.startsWith("case size:"))
+      data.diameter = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+    if (lowerLine.startsWith("water resistance:"))
+      data.waterResistance = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
 
-    // SOAT XARAKTERISTIKALARI
-    if (trimmedLine.startsWith("Brend:"))
-      data.brand = trimmedLine.replace("Brend:", "").trim();
-    if (trimmedLine.startsWith("Model:"))
-      data.model = trimmedLine.replace("Model:", "").trim();
-    if (trimmedLine.startsWith("Yili:"))
-      data.year = trimmedLine.replace("Yili:", "").trim();
-    if (trimmedLine.startsWith("Mexanizm:"))
-      data.mechanism = trimmedLine.replace("Mexanizm:", "").trim();
-    if (trimmedLine.startsWith("Diametr:"))
-      data.diameter = trimmedLine.replace("Diametr:", "").trim();
-    if (trimmedLine.startsWith("Korpus:"))
-      data.caseMaterial = trimmedLine.replace("Korpus:", "").trim();
-    if (trimmedLine.startsWith("Kamar:"))
-      data.strap = trimmedLine.replace("Kamar:", "").trim();
-    if (trimmedLine.startsWith("Suvdan himoya:"))
-      data.waterResistance = trimmedLine.replace("Suvdan himoya:", "").trim();
-    if (trimmedLine.startsWith("Shisha:"))
-      data.glass = trimmedLine.replace("Shisha:", "").trim();
-    if (trimmedLine.startsWith("Joy:"))
-      data.location = trimmedLine.replace("Joy:", "").trim();
-    if (trimmedLine.startsWith("Sana:"))
-      data.date = trimmedLine.replace("Sana:", "").trim();
-    if (trimmedLine.startsWith("Instagram:"))
-      data.instagram = trimmedLine.replace("Instagram:", "").trim();
-    if (trimmedLine.startsWith("Youtube:"))
-      data.youtube = trimmedLine.replace("Youtube:", "").trim();
-    if (trimmedLine.startsWith("Tavsif:"))
-      data.description = trimmedLine.replace("Tavsif:", "").trim();
+    // META
+    if (lowerLine.startsWith("date:"))
+      data.date = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (lowerLine.startsWith("instagram:"))
+      data.instagram = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
+    if (lowerLine.startsWith("youtube:"))
+      data.youtube = trimmedLine.substring(trimmedLine.indexOf(":") + 1).trim();
+    if (lowerLine.startsWith("description:"))
+      data.description = trimmedLine
+        .substring(trimmedLine.indexOf(":") + 1)
+        .trim();
 
-    // Rasmlarni olish
-    if (trimmedLine.match(/^Rasm\d+:/i)) {
-      const urlMatches = trimmedLine.match(/https?:\/\/[^\s]+/);
-      if (urlMatches && urlMatches[0]) {
-        images.push(urlMatches[0]);
+    // IMAGES (Image1:, Image2: yoki matn ichidagi URL-lar)
+    if (lowerLine.includes("http://") || lowerLine.includes("https://")) {
+      const urlMatches = trimmedLine.match(/(https?:\/\/[^\s]+)/g);
+      if (urlMatches) {
+        urlMatches.forEach((url) => images.push(url));
       }
     }
   });
@@ -158,80 +176,55 @@ function parseWatchPost(text, messageId) {
   data.isUsed = isUsed;
   data.type = type;
   data.images = images;
+  data.image = images[0] || "";
 
   return data;
 }
 
-// BOT LISTENERI
+// 4. Telegram Event-larni Eshitish (Kanal va Shaxsiy xabarlar)
 bot.on(["message", "channel_post", "edited_channel_post"], async (ctx) => {
   try {
     const post = ctx.channelPost || ctx.editedChannelPost || ctx.message;
-    const text = post.text || post.caption || "";
+    const text = post.caption || post.text || "";
 
-    // Text mavjud emasligini tekshirish
     if (!text || !text.trim()) return;
 
     const watchData = parseWatchPost(text, post.message_id);
+    if (!watchData || (!watchData.name && !watchData.brand)) return;
 
-    // Baza uchun validatsiya
-    if (
-      !watchData ||
-      (!watchData.name &&
-        !watchData.price &&
-        !watchData.startingPrice &&
-        !watchData.totalPrice)
-    ) {
-      console.log(
-        `⚠️ Bo'sh yoki soat ma'lumotiga ega bo'lmagan post e'tiborsiz qoldirildi (ID: ${post.message_id})`
-      );
-      return;
-    }
+    let targetCollection = "watches";
+    if (watchData.isAuction) targetCollection = "auctions";
+    else if (watchData.isInstallment) targetCollection = "installment_watches";
+    else if (watchData.isUsed) targetCollection = "used_watches";
 
-    if (watchData.isAuction) {
-      await db
-        .collection("auctions")
-        .doc(`post_${post.message_id}`)
-        .set(watchData, { merge: true });
-      console.log(`🔥 Auksion soat saqlandi: post_${post.message_id}`);
-    } else if (watchData.isInstallment) {
-      await db
-        .collection("installment_watches")
-        .doc(`post_${post.message_id}`)
-        .set(watchData, { merge: true });
-      console.log(`🏦 Nasiya soat saqlandi: post_${post.message_id}`);
-    } else if (watchData.isUsed) {
-      await db
-        .collection("used_watches")
-        .doc(`post_${post.message_id}`)
-        .set(watchData, { merge: true });
-      console.log(`⌚ Б/У soat saqlandi: post_${post.message_id}`);
-    } else {
-      await db
-        .collection("watches")
-        .doc(`post_${post.message_id}`)
-        .set(watchData, { merge: true });
-      console.log(`⌚ Oddiy (Yangi) soat saqlandi: post_${post.message_id}`);
-    }
-  } catch (error) {
-    console.error("❌ Firestore-ga yozishda xato:", error);
+    await db
+      .collection(targetCollection)
+      .doc(`post_${post.message_id}`)
+      .set(watchData, { merge: true });
+
+    console.log(`✅ Saqlandi [${targetCollection}]: post_${post.message_id}`);
+  } catch (err) {
+    console.error("❌ Firestore Error:", err);
   }
 });
 
-// Render uchun soxta HTTP server
+// 5. Render / Web Service uchun HTTP Health Check Server
 const PORT = process.env.PORT || 10000;
 http
   .createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("The Watch Outlet Bot active!");
+    res.end("Watch Bot Active");
   })
   .listen(PORT, () => {
-    console.log(`🌐 Dummy HTTP server ${PORT}-portda ishlamoqda...`);
+    console.log(`🌐 Web server ${PORT}-portda ishlamoqda...`);
   });
 
-// BOTNI ISHGA TUSHIRISH
-bot.launch();
-console.log("🤖 Bot ishga tushdi, postlarni kutmoqda...");
+// 6. Botni Ishga Tushirish
+bot
+  .launch()
+  .then(() => console.log("🤖 Watch Outlet Bot muvaffaqiyatli ishga tushdi!"))
+  .catch((err) => console.error("❌ Botni ishga tushirishda xatolik:", err));
 
-// Dastur to'xtaganda botni toza yopish
+// Graceful Shutdown
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));

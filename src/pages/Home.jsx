@@ -16,9 +16,8 @@ const Home = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const displayProducts = cars
-    ? cars.filter((item) => !item.isAuction && item.type !== "auction")
-    : [];
+  // Barcha ma'lumotlarni to'g'ridan-to'g'ri olamiz (filtrsiz)
+  const displayProducts = Array.isArray(cars) ? cars : [];
 
   return (
     <div>
@@ -59,12 +58,12 @@ const Home = () => {
         ) : displayProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             {displayProducts.map((product) => (
-              <CarCard key={product.id} car={product} />
+              <CarCard key={product.id || Math.random()} car={product} />
             ))}
           </div>
         ) : (
           <div className="text-center py-10 text-slate-400 text-sm">
-            E'lonlar topilmadi.
+            E'lonlar topilmadi. (Firestore-da ma'lumot yo'q yoki ulanishda xato)
           </div>
         )}
       </div>

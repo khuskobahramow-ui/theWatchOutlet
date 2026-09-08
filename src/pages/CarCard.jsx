@@ -63,16 +63,27 @@ const CarCard = ({ car: watch }) => {
             </div>
           )}
 
-          {watch?.brand && (
-            <span className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-semibold px-2 py-0.5 rounded-md border border-white/10 uppercase">
-              {watch.brand}
-            </span>
-          )}
+          {/* BADGELAR (Brend va B/U) */}
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1">
+            {watch?.brand && (
+              <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-semibold px-2 py-0.5 rounded-md border border-white/10 uppercase">
+                {watch.brand}
+              </span>
+            )}
 
+            {/* Faqat isUsed haqiqatan true bo'lsa B/U chiqadi */}
+            {watch?.isUsed === true && (
+              <span className="bg-amber-500 text-black text-[10px] font-extrabold px-1.5 py-0.5 rounded-md uppercase shadow-md tracking-wider">
+                B/U
+              </span>
+            )}
+          </div>
+
+          {/* LIKE TUGMASI */}
           <button
             type="button"
             onClick={handleToggleLike}
-            className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-slate-700 hover:bg-white active:scale-90 transition-all shadow-sm"
+            className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-slate-700 hover:bg-white active:scale-90 transition-all shadow-sm z-10"
           >
             {isLiked ? (
               <FaHeart className="text-rose-500 text-base" />

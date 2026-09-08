@@ -8,7 +8,8 @@ import { getLikedIds, subscribeToLikeChanges } from "./Likes";
 import BottomNav from "./BottomNav";
 
 const LikedProduct = () => {
-  const { cars, loading } = useCars();
+  // barcha soatlarni (Yangi + B/U + Nasiya) allCars orqali olamiz
+  const { allCars, loading } = useCars();
 
   const [likedIds, setLikedIds] = useState(() => getLikedIds());
 
@@ -19,10 +20,15 @@ const LikedProduct = () => {
     return unsubscribe;
   }, []);
 
-  const likedCars = cars.filter((car) => likedIds.includes(car.id));
+  // Liked IDs ichida car.id yoki car.originalId borligini tekshiramiz
+  const likedCars = allCars.filter(
+    (car) =>
+      likedIds.includes(car.id) ||
+      (car.originalId && likedIds.includes(car.originalId))
+  );
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#0b1329]">
       <Navbar />
 
       <div className="px-3 mt-3 pb-20">
@@ -45,19 +51,19 @@ const LikedProduct = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-3">
-              <LuHeart size={26} className="text-slate-300" />
+            <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-3">
+              <LuHeart size={26} className="text-slate-500" />
             </div>
             <p className="text-slate-400 text-sm">
-              Hozircha yoqtirgan e'lonlaringiz yo'q.
+              Hozircha yoqtirgan soatlaringiz yo'q.
             </p>
-            <p className="text-slate-300 text-xs mt-1">
-              Mashinaning yurakcha belgisini bosib saqlab qo'ying.
+            <p className="text-slate-500 text-xs mt-1">
+              Soatning yurakcha belgisini bosib saqlab qo'ying.
             </p>
           </div>
         )}
       </div>
-      {/* Pastki Navigatsiya Menyusi */}
+
       <BottomNav />
     </div>
   );

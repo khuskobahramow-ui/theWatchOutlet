@@ -26,14 +26,14 @@ const LikedProduct = () => {
       <Navbar />
 
       <div className="px-3 mt-3 pb-20">
-        <h2 className="text-lg font-bold text-slate-900 mb-3">Saqlanganlar</h2>
+        <h2 className="text-lg font-bold text-white mb-3">Saqlanganlar</h2>
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             {[1, 2].map((n) => (
               <div
                 key={n}
-                className="h-64 bg-slate-200 animate-pulse rounded-2xl"
+                className="h-64 bg-[#0f192b] animate-pulse rounded-2xl"
               />
             ))}
           </div>

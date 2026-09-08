@@ -3,7 +3,7 @@ import { FiSearch, FiSliders } from "react-icons/fi";
 
 const SearchBar = ({ onOpenSearch, onOpenFilter }) => {
   return (
-    <div className="px-3  pb-1">
+    <div className="px-3 pb-1">
       <div className="flex items-center gap-2">
         {/* Qidiruv tugmasi (Border va Soya bilan) */}
         <button
@@ -13,7 +13,7 @@ const SearchBar = ({ onOpenSearch, onOpenFilter }) => {
         >
           <FiSearch size={18} className="text-slate-400 flex-shrink-0" />
           <span className="truncate text-xs font-medium text-slate-400">
-            Avtomobil, ID yoki VIN topish...
+            Soat nomi yoki Ref. Code bo'yicha topish...
           </span>
         </button>
 

@@ -26,16 +26,31 @@ const SearchModal = ({
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase().trim();
 
-    const name = (car.name || "").toLowerCase();
-    const id = (car.id || "").toLowerCase();
-    const listingId = (car.listingId || "").toLowerCase();
-    const vin = (car.vin || "").toLowerCase();
+    // Nomi va Brend maydonlari
+    const name = String(car.name || "").toLowerCase();
+    const cardTitle = String(car.cardTitle || "").toLowerCase();
+    const title = String(car.title || "").toLowerCase();
+    const brand = String(car.brand || "").toLowerCase();
+    const model = String(car.model || "").toLowerCase();
+
+    // Ref Code va ID maydonlari
+    const refCode = String(
+      car.refCode || car.ref_code || car["Ref. Code"] || ""
+    ).toLowerCase();
+    const id = String(car.id || "").toLowerCase();
+    const watchId = String(car.watchId || "").toLowerCase();
+    const listingId = String(car.listingId || "").toLowerCase();
 
     return (
       name.includes(query) ||
+      cardTitle.includes(query) ||
+      title.includes(query) ||
+      brand.includes(query) ||
+      model.includes(query) ||
+      refCode.includes(query) ||
       id.includes(query) ||
-      listingId.includes(query) ||
-      vin.includes(query)
+      watchId.includes(query) ||
+      listingId.includes(query)
     );
   });
 
@@ -49,13 +64,13 @@ const SearchModal = ({
             autoFocus
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Nomi, ID (masalan: AT-0001) yoki VIN..."
+            placeholder="Soat nomi yoki Ref. Code..."
             className="w-full bg-slate-100 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
         <button
           onClick={onClose}
-          className="p-2 text-white hover:bg-slate-100 rounded-xl transition-colors"
+          className="p-2 text-white hover:bg-slate-100/10 rounded-xl transition-colors"
         >
           <FiX size={24} />
         </button>
@@ -65,7 +80,7 @@ const SearchModal = ({
         {searchQuery.trim() && (
           <p className="text-xs text-slate-400 mb-3">
             Topilgan natijalar:{" "}
-            <span className="font-semibold text-slate-700">
+            <span className="font-semibold text-slate-300">
               {filteredCars.length} ta
             </span>
           </p>
@@ -74,7 +89,7 @@ const SearchModal = ({
         {filteredCars.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 pb-10">
             {filteredCars.map((car) => (
-              <CarCard key={car.id} car={car} />
+              <CarCard key={car.id || Math.random()} car={car} />
             ))}
           </div>
         ) : (

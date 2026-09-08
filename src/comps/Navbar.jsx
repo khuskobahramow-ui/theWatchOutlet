@@ -133,7 +133,7 @@ const Navbar = () => {
                     }
                   >
                     <LuGavel size={20} />
-                    <span>Bozor</span>
+                    <span>Auction</span>
                   </NavLink>
 
                   <NavLink

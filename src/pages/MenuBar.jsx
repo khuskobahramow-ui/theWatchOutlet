@@ -43,7 +43,7 @@ const MenuBar = () => {
           </span>
         </NavLink>
         <NavLink
-          to="/usedWatches"
+          to="/used-watches"
           className="flex  flex-col items-center justify-center p-3 bg-[#0f192b] rounded-2xl border-1 border-slate-100 shadow-sm hover:shadow-md active:scale-95 transition-all duration-200 group"
         >
           <div

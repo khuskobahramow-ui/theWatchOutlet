@@ -14,10 +14,10 @@ const TelegramGuard = ({ children, botUrl = "https://t.me/Avtotekuzbot" }) => {
   // Brauzer orqali kirgan bo'lsa, blokirovka va yo'naltirish oynasi
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="flex w-full left-0 justify-between items-center border-b bg-[#f8fafc] border-slate-200 absolute top-0 z-40">
+      <div className="flex w-full left-0 justify-between items-center border-b bg-[#0f192b] border-slate-200 absolute top-0 z-40">
         <NavLink
           to="/"
-          className="flex justify-start font-bold py-3 items-center w-25"
+          className="flex justify-start text-white font-bold py-3 items-center w-25"
         >
           <IoIosArrowBack size={30} />
           Orqaga

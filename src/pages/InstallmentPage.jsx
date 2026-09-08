@@ -38,12 +38,12 @@ const InstallmentPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24 pt-0 p-3">
+    <div className="min-h-screen bg-[#112544] pb-24 pt-0">
       {/* Header bar - Filtr tugmasi bilan */}
-      <div className="flex w-full left-0 justify-between items-center border-b bg-[#f8fafc] border-slate-200 sticky top-0 z-40 px-1">
+      <div className="flex w-full left-0 justify-between items-center border-b bg-[#0f192b] border-slate-200 sticky top-0 z-40 px-1">
         <NavLink
           to="/"
-          className="flex justify-start font-bold py-3 items-center"
+          className="flex justify-start text-white font-bold py-3 items-center"
         >
           <IoIosArrowBack size={30} />
           Orqaga
@@ -52,16 +52,16 @@ const InstallmentPage = () => {
         {/* Filtr Ochish Tugmasi */}
         <button
           onClick={() => setIsFilterOpen(true)}
-          className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-600 font-semibold text-xs px-3 py-1.5 rounded-xl active:scale-95 transition-all"
+          className="flex items-center gap-1.5 mr-[10px] bg-white border border-indigo-100 text-indigo-600 font-semibold text-xs px-3 py-1.5 rounded-xl active:scale-95 transition-all"
         >
           <FiFilter size={16} />
           Filtr
         </button>
       </div>
 
-      <div className="mb-5 mt-2">
-        <h1 className="text-2xl font-black text-slate-900">Nasiya Savdo</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
+      <div className="mb-5 mt-2 px-[9px] ">
+        <h1 className="text-2xl font-black text-white">Nasiya Savdo</h1>
+        <p className="text-xs text-white mt-0.5">
           Qulay boshlang'ich to'lov va muddatli to'lov variantlari
         </p>
       </div>
@@ -71,12 +71,12 @@ const InstallmentPage = () => {
           {[1, 2, 3, 4].map((n) => (
             <div
               key={n}
-              className="bg-white rounded-2xl h-64 animate-pulse border border-slate-100 p-3"
+              className="bg-[#0f192b] px-[9px] rounded-2xl h-64 animate-pulse border border-slate-100 p-3"
             />
           ))}
         </div>
       ) : cars && cars.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid px-[9px] grid-cols-2 gap-2">
           {cars.map((car) => (
             <InstallmentCard
               key={car.id || car.messageId}

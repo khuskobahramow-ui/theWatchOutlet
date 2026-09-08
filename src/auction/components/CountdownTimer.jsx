@@ -85,10 +85,8 @@ const CountdownTimer = ({ endTime, onExpire }) => {
   const format = (num) => String(num).padStart(2, "0");
 
   return (
-    <span
-      style={{ color: "#38bdf8", fontWeight: "bold", fontFamily: "monospace" }}
-    >
-      ⏱ {timeLeft.days > 0 ? `${timeLeft.days}k ` : ""}
+    <span style={{ color: "red", fontWeight: "bold", fontFamily: "monospace" }}>
+      ⏱ {timeLeft.days > 0 ? `${timeLeft.days}Д ` : ""}
       {format(timeLeft.hours)}:{format(timeLeft.minutes)}:
       {format(timeLeft.seconds)}
     </span>

@@ -58,7 +58,7 @@ const AuctionCard = ({ item, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-2xl overflow-hidden border-2 border-indigo-500/30 shadow-sm hover:shadow-md transition-all relative flex flex-col justify-between cursor-pointer active:scale-98"
+      className="bg-[#0f192b] rounded-2xl overflow-hidden border-2 border-indigo-500/30 shadow-sm hover:shadow-md transition-all relative flex flex-col justify-between cursor-pointer active:scale-98"
     >
       <div className="relative w-full h-44 bg-slate-100">
         <img
@@ -71,9 +71,9 @@ const AuctionCard = ({ item, onClick }) => {
         </span>
       </div>
 
-      <div className="p-2 flex-1 flex flex-col justify-between ">
+      <div className="p-2 flex-1 flex flex-col gap-[5px] justify-between ">
         <div>
-          <h3 className="font-bold text-slate-800 text-sm truncate">
+          <h3 className="font-bold text-white text-sm truncate">
             {item.title || item.name || "Nomsiz e'lon"}
           </h3>
           <div className="text-blue-600 font-extrabold text-base">
@@ -95,11 +95,11 @@ const AuctionCard = ({ item, onClick }) => {
           </span>
         </div>
 
-        <div className="bg-indigo-50/70 rounded-xl p-1.5 flex items-center justify-between text-xs mt-1 border border-indigo-100">
-          <span className="text-indigo-900 font-semibold text-[11px]">
-            Qoldi:
-          </span>
-          <CountdownTimer endTime={item.endTime} />
+        <div className="bg-[#112544]  rounded-xl p-1.5 flex items-center justify-between text-xs mt-1 border border-indigo-100">
+          <span className="text-white font-semibold text-[11px] ">Qoldi:</span>
+          <h3 className=" animate-pulse text-red-500 ">
+            <CountdownTimer endTime={item.endTime} />
+          </h3>
         </div>
       </div>
     </div>

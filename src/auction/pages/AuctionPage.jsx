@@ -62,19 +62,19 @@ const AuctionPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24 p-3">
-      <div className="flex w-full left-0 justify-between items-center border-b bg-[#f8fafc] border-slate-200 sticky top-0 z-40">
+    <div className="min-h-screen bg-[#112544] pb-24">
+      <div className="flex w-full left-0 justify-between items-center border-b bg-[#0f192b] border-white sticky top-0 z-40">
         <NavLink
           to="/"
-          className="flex justify-start font-bold py-3 items-center w-25"
+          className="flex text-white justify-start font-bold py-3 items-center w-25"
         >
           <IoIosArrowBack size={30} />
           Orqaga
         </NavLink>
       </div>
-      <div className="mb-5">
-        <h1 className="text-2xl font-black text-slate-900">Auksionlar</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
+      <div className="mb-3 px-[7px] mt-[10px] ">
+        <h1 className="text-2xl font-black text-white">Auksionlar</h1>
+        <p className="text-xs text-white mt-0.5">
           Eng so'nggi takliflar va auksion savdolari
         </p>
       </div>
@@ -89,7 +89,7 @@ const AuctionPage = () => {
           ))}
         </div>
       ) : auctions && auctions.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid px-[7px] grid-cols-2 gap-2">
           {auctions.map((auction) => (
             <AuctionCard
               key={auction.id || auction.messageId}

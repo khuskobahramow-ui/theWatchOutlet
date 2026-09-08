@@ -109,13 +109,13 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-white flex flex-col animate-in fade-in duration-200 h-full w-full">
+    <div className="fixed inset-0 z-[100] bg-[#112544] flex flex-col animate-in fade-in duration-200 h-full w-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-slate-100 bg-white shadow-sm">
-        <h3 className="text-lg font-bold text-slate-800">Filtr va Natijalar</h3>
+      <div className="flex items-center justify-between p-3 border-b border-slate-100 bg-[#0f192b] shadow-sm">
+        <h3 className="text-lg font-bold text-white">Filtr va Natijalar</h3>
         <button
           onClick={onClose}
-          className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
+          className="p-2 text-white hover:bg-slate-100 rounded-xl transition-colors"
         >
           <FiX size={24} />
         </button>
@@ -124,10 +124,10 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
       {/* Kontent qismi */}
       <div className="flex-1 overflow-y-auto p-3 space-y-4">
         {/* Inputlar paneli */}
-        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 space-y-3.5 shadow-sm">
+        <div className="bg-[#0f192b] p-3.5 rounded-2xl border border-slate-200/80 space-y-3.5 shadow-sm">
           {/* Mashina Nomi / ID / VIN */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-bold text-white uppercase tracking-wider mb-1">
               Mashina Rusumi / Nomi / VIN
             </label>
             <div className="relative">
@@ -144,7 +144,7 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
 
           {/* Narxi */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-bold text-white uppercase tracking-wider mb-1">
               Narxi ($)
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -167,7 +167,7 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
 
           {/* Yili */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-bold text-white uppercase tracking-wider mb-1">
               Ishlab chiqarilgan yili
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -190,7 +190,7 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
 
           {/* Probeg */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-bold text-white uppercase tracking-wider mb-1">
               Yurgan masofasi (km)
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -213,7 +213,7 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
 
           {/* Shahar / Viloyat */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+            <label className="block text-[11px] font-bold text-white uppercase tracking-wider mb-1">
               Shahar / Viloyat
             </label>
             <select
@@ -233,7 +233,7 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
           <div className="flex justify-end pt-1">
             <button
               onClick={handleReset}
-              className="text-xs font-semibold text-blue-600 hover:underline"
+              className="text-xs font-semibold text-red-600 hover:underline"
             >
               Barcha filtr bo'limlarini tozalash
             </button>
@@ -242,9 +242,9 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
 
         {/* Natijalar ko'rinishi */}
         <div>
-          <p className="text-xs text-slate-400 mb-2">
+          <p className="text-xs text-white mb-2">
             Topilgan natijalar:{" "}
-            <span className="font-semibold text-slate-700">
+            <span className="font-semibold text-white">
               {filteredCars.length} ta
             </span>
           </p>

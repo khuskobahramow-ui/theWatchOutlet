@@ -40,8 +40,8 @@ const SearchModal = ({
   });
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col animate-in fade-in duration-200">
-      <div className="flex items-center gap-2 p-3 border-b border-slate-100 bg-white shadow-sm">
+    <div className="fixed inset-0 z-50 bg-[#112544] flex flex-col animate-in fade-in duration-200">
+      <div className="flex items-center gap-2 p-3 border-b border-slate-100 bg-[#0f192b] shadow-sm">
         <div className="relative flex-1">
           <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
           <input
@@ -55,7 +55,7 @@ const SearchModal = ({
         </div>
         <button
           onClick={onClose}
-          className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
+          className="p-2 text-white hover:bg-slate-100 rounded-xl transition-colors"
         >
           <FiX size={24} />
         </button>

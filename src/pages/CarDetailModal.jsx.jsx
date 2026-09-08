@@ -18,8 +18,8 @@ import PriceTag from "../comps/PriceTag";
 const StatChip = ({ icon: Icon, label, value }) => {
   const hasValue = value && value !== "" && value !== "-";
   return (
-    <div className="bg-white rounded-2xl p-3 flex flex-col gap-1.5 min-w-0 shadow-sm border border-slate-100">
-      <div className="flex items-center gap-1.5 text-slate-400">
+    <div className="bg-[#0f192b] rounded-2xl p-3 flex flex-col gap-1.5 min-w-0 shadow-sm border border-slate-100">
+      <div className="flex items-center gap-1.5 text-white">
         {Icon && <Icon size={14} />}
         <span className="text-[10px] font-semibold uppercase tracking-wide">
           {label}
@@ -27,7 +27,7 @@ const StatChip = ({ icon: Icon, label, value }) => {
       </div>
       <span
         className={`text-sm font-bold truncate ${
-          hasValue ? "text-slate-900" : "text-slate-300 font-medium"
+          hasValue ? "text-white" : "text-white font-medium"
         }`}
       >
         {hasValue ? value : "Kiritilmagan"}
@@ -193,7 +193,7 @@ const CarDetailModal = ({ car, onClose }) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[1000000] bg-[#f8fafc] w-full h-full overflow-y-auto select-none"
+        className="fixed inset-0 z-[1000000] bg-[#112544] w-full h-full overflow-y-auto select-none"
         initial={{ opacity: 0, y: "100%" }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: "100%" }}
@@ -279,14 +279,14 @@ const CarDetailModal = ({ car, onClose }) => {
           </div>
 
           {/* ASOSIY MA'LUMOTLAR */}
-          <div className="px-4 pt-5 bg-[#f8fafc] rounded-t-3xl relative z-10 -mt-4 flex-1">
+          <div className="px-4 pt-5 bg-[#112544] mb-[30px] rounded-t-3xl relative z-10 -mt-4 flex-1">
             <div className="flex items-start justify-between gap-3 mb-1">
-              <h2 className="text-2xl font-extrabold text-slate-900 leading-tight">
+              <h2 className="text-2xl font-extrabold text-white leading-tight">
                 {car.name || "Avtomobil"}
               </h2>
             </div>
             {car.listingId && (
-              <div className="text-[11px] text-slate-400 font-mono mb-1">
+              <div className="text-[11px] text-white font-mono mb-1">
                 {car.listingId}
               </div>
             )}

@@ -1,23 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Navbar from "../comps/Navbar";
 import MenuBar from "./MenuBar";
 import SearchBar from "./SearchBar";
 import CarCard from "./CarCard";
 import SearchModal from "./SearchModal";
 import FilterModal from "./FilterModal";
-import { LuRefreshCw } from "react-icons/lu";
 import useCars from "./UseCars";
 import BottomNav from "./BottomNav";
 
 const Home = () => {
-  const { cars, loading, refreshing, refresh } = useCars();
+  const { cars, loading } = useCars();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("All");
 
-  // Barcha ma'lumotlarni to'g'ridan-to'g'ri olamiz (filtrsiz)
-  const displayProducts = Array.isArray(cars) ? cars : [];
+  const rawProducts = Array.isArray(cars) ? cars : [];
+
+  // Bazadagi soat kelishiga qarab brendlar ro'yxatini avtomatik shakllantirish
+  const availableBrands = useMemo(() => {
+    const brandsSet = new Set();
+    rawProducts.forEach((item) => {
+      if (item?.brand && String(item.brand).trim() !== "") {
+        brandsSet.add(String(item.brand).trim());
+      }
+    });
+    return ["All", ...Array.from(brandsSet)];
+  }, [rawProducts]);
+
+  // Tanlangan brend bo'yicha filtrlash
+  const displayProducts = useMemo(() => {
+    if (selectedBrand === "All") return rawProducts;
+    return rawProducts.filter(
+      (item) =>
+        item?.brand &&
+        String(item.brand).toLowerCase() === selectedBrand.toLowerCase()
+    );
+  }, [rawProducts, selectedBrand]);
 
   return (
     <div>
@@ -29,23 +49,27 @@ const Home = () => {
         onOpenFilter={() => setIsFilterOpen(true)}
       />
 
-      <div className="px-3 mt-2 pb-20">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-bold text-white">
-            Barcha e'lonlar - Yangi Soatlar
-          </h2>
-          <button
-            type="button"
-            onClick={refresh}
-            className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 active:scale-90 transition-transform"
-          >
-            <LuRefreshCw
-              size={16}
-              className={refreshing ? "animate-spin" : ""}
-            />
-          </button>
+      {/* Yopishqoq (Sticky) va Scroll bo'ladigan brendlar filtri */}
+      <div className="sticky top-0 z-10 mt-[5px] mx-[5px] rounded-[15px] bg-[#0b1329]/95 backdrop-blur-md px-3 py-2 border-b border-slate-800/50">
+        <div className="flex items-center gap-1.5 pl-[3px] overflow-x-auto no-scrollbar">
+          {availableBrands.map((brand) => (
+            <button
+              key={brand}
+              type="button"
+              onClick={() => setSelectedBrand(brand)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+                selectedBrand === brand
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105"
+                  : "bg-[#0f192b] text-slate-300 border border-slate-700/60 hover:bg-[#182640]"
+              }`}
+            >
+              {brand === "All" ? "Barchasi" : brand}
+            </button>
+          ))}
         </div>
+      </div>
 
+      <div className="px-3 mt-3 pb-20">
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             {[1, 2, 3, 4].map((n) => (
@@ -63,7 +87,7 @@ const Home = () => {
           </div>
         ) : (
           <div className="text-center py-10 text-slate-400 text-sm">
-            E'lonlar topilmadi. (Firestore-da ma'lumot yo'q yoki ulanishda xato)
+            E'lonlar topilmadi.
           </div>
         )}
       </div>
@@ -73,13 +97,13 @@ const Home = () => {
         onClose={() => setIsSearchOpen(false)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        cars={displayProducts}
+        cars={rawProducts}
       />
 
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        cars={displayProducts}
+        cars={rawProducts}
       />
 
       <BottomNav />

@@ -37,7 +37,7 @@ const UsedWatches = () => {
   }, [usedCars, selectedBrand]);
 
   return (
-    <div className="min-h-screen bg-[#0b1329]">
+    <div className="min-h-screen bg-[#112544]">
       <Navbar />
 
       <div className="mt-2">

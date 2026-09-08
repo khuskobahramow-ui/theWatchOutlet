@@ -48,10 +48,13 @@ const Home = () => {
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenFilter={() => setIsFilterOpen(true)}
       />
+      {/* <div className="px-[10px]">
+        <h1 className=" text-white text-[15px] ">Barcha yangi soatlar</h1>
+      </div> */}
 
       {/* Yopishqoq (Sticky) va Scroll bo'ladigan brendlar filtri */}
-      <div className="sticky border-[2px] border-[#657591] top-0 z-10 mt-[5px] mx-[5px] rounded-[15px] bg-[#0b1329]/95 backdrop-blur-md px-3 py-2">
-        <div className="flex items-center gap-2 pl-[3px] overflow-x-auto no-scrollbar">
+      <div className="sticky border-[1px] border-[#657591] top-0 z-10 mt-[5px] mx-[5px] rounded-[15px] bg-[#0b1329]/95 backdrop-blur-md px-3 py-2">
+        <div className="flex items-center gap-2 pl-[3px] overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {availableBrands.map((brand) => (
             <button
               key={brand}

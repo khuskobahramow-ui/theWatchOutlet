@@ -50,20 +50,20 @@ const Home = () => {
       />
 
       {/* Yopishqoq (Sticky) va Scroll bo'ladigan brendlar filtri */}
-      <div className="sticky top-0 z-10 mt-[5px] mx-[5px] rounded-[15px] bg-[#0b1329]/95 backdrop-blur-md px-3 py-2 border-b border-slate-800/50">
-        <div className="flex items-center gap-1.5 pl-[3px] overflow-x-auto no-scrollbar">
+      <div className="sticky border-[2px] border-[#657591] top-0 z-10 mt-[5px] mx-[5px] rounded-[15px] bg-[#0b1329]/95 backdrop-blur-md px-3 py-2">
+        <div className="flex items-center gap-2 pl-[3px] overflow-x-auto no-scrollbar">
           {availableBrands.map((brand) => (
             <button
               key={brand}
               type="button"
               onClick={() => setSelectedBrand(brand)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+              className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
                 selectedBrand === brand
                   ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105"
-                  : "bg-[#0f192b] text-slate-300 border border-slate-700/60 hover:bg-[#182640]"
+                  : "bg-[#0f192b] text-white border border-slate-400/60 hover:bg-[#182640]"
               }`}
             >
-              {brand === "All" ? "Barchasi" : brand}
+              {brand === "All" ? "All" : brand}
             </button>
           ))}
         </div>

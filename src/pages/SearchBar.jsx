@@ -3,7 +3,7 @@ import { FiSearch, FiSliders } from "react-icons/fi";
 
 const SearchBar = ({ onOpenSearch, onOpenFilter }) => {
   return (
-    <div className="px-3 pt-3 pb-1">
+    <div className="px-3  pb-1">
       <div className="flex items-center gap-2">
         {/* Qidiruv tugmasi (Border va Soya bilan) */}
         <button

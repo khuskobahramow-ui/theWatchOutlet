@@ -47,7 +47,7 @@ const FullscreenGallery = ({ images, startIndex, onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-black flex flex-col justify-between"
+      className="fixed inset-0 z-[10000000000000] bg-black flex flex-col justify-between"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -75,20 +75,20 @@ const FullscreenGallery = ({ images, startIndex, onClose }) => {
 
       <motion.div
         key={`fs-auction-img-${index}`}
-        className="w-full flex-1 flex items-center justify-center p-2 relative"
+        className="w-full flex-1 flex items-center justify-center p-2 relative select-none"
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
         onDragEnd={handleDragEnd}
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0.5, scale: 0.95 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2 }}
       >
         <img
           src={images[index]}
           alt=""
-          className="max-w-full max-h-[80vh] object-contain pointer-events-none select-none rounded-md"
+          className="max-w-full max-h-[80vh] object-contain select-none rounded-md"
           draggable={false}
         />
       </motion.div>
@@ -213,7 +213,12 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
     setActiveImgIndex((prev) => (prev - 1 + images.length) % images.length);
 
   const handleDragEnd = (event, info) => {
-    const threshold = 40;
+    const threshold = 30;
+    // Agar surish (drag) masofasi juda kichik bo'lsa, uni oddiy "click" (bosish) deb hisoblaymiz
+    if (Math.abs(info.offset.x) < 5 && Math.abs(info.offset.y) < 5) {
+      setShowGallery(true);
+      return;
+    }
     if (info.offset.x < -threshold) goNext();
     else if (info.offset.x > threshold) goPrev();
   };
@@ -316,7 +321,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
           <div className="relative w-full h-[36vh] bg-slate-900 shrink-0 overflow-hidden">
             <motion.div
               key={`auction-img-${activeImgIndex}`}
-              className="w-full h-full cursor-pointer"
+              className="w-full h-full cursor-pointer relative z-0"
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.05}
@@ -329,25 +334,27 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
               <img
                 src={images[activeImgIndex]}
                 alt={watchTitle}
-                className="w-full h-full object-cover pointer-events-none select-none"
+                className="w-full h-full object-cover select-none"
                 draggable={false}
               />
             </motion.div>
 
             <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/60 to-transparent pointer-events-none z-10" />
 
+            {/* Yopish tugmasi */}
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 left-4 w-11 h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-xl active:scale-90 transition-transform z-20"
+              className="absolute top-4 left-4 w-11 h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-xl active:scale-90 transition-transform z-30 cursor-pointer"
             >
               <LuX size={22} />
             </button>
 
+            {/* Kattalashtirish (Expand) tugmasi */}
             <button
               type="button"
               onClick={() => setShowGallery(true)}
-              className="absolute top-4 right-4 w-11 h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-xl active:scale-90 transition-transform z-20"
+              className="absolute top-4 right-4 w-11 h-11 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-xl active:scale-90 transition-transform z-30 cursor-pointer"
             >
               <LuExpand size={19} />
             </button>

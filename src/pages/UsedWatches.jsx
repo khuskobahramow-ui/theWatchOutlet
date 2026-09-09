@@ -6,6 +6,8 @@ import SearchModal from "./SearchModal";
 import FilterModal from "./FilterModal";
 import useUsedWatches from "./UseUsedWatches"; // Yangi hook
 import BottomNav from "./BottomNav";
+import { IoIosArrowBack } from "react-icons/io";
+import { NavLink } from "react-router-dom";
 
 const UsedWatches = () => {
   const { usedCars, loading } = useUsedWatches();
@@ -38,7 +40,16 @@ const UsedWatches = () => {
 
   return (
     <div className="min-h-screen bg-[#112544]">
-      <Navbar />
+      {/* <Navbar /> */}
+      <div className="flex w-full left-0 justify-between items-center border-b bg-[#0f192b] border-white z-40">
+        <NavLink
+          to="/"
+          className="flex text-white justify-start font-bold py-3 items-center w-25"
+        >
+          <IoIosArrowBack size={30} />
+          Orqaga
+        </NavLink>
+      </div>
 
       <div className="mt-2">
         <SearchBar

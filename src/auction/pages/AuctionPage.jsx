@@ -7,6 +7,7 @@ import AuctionCard from "../components/AuctionCard";
 import AuctionDetailModal from "../components/AuctionDetailModal";
 import { NavLink } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
+import BottomNav from "../../pages/BottomNav";
 
 const AuctionPage = () => {
   const [auctions, setAuctions] = useState([]);
@@ -80,7 +81,7 @@ const AuctionPage = () => {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid px-[7px] grid-cols-2 gap-2">
           {[1, 2].map((n) => (
             <div
               key={n}
@@ -111,6 +112,7 @@ const AuctionPage = () => {
           onClose={() => setSelectedAuction(null)}
         />
       )}
+      <BottomNav />
     </div>
   );
 };

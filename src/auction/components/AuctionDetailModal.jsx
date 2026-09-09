@@ -2,20 +2,21 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   LuX,
-  LuCalendar,
-  LuGauge,
-  LuFuel,
-  LuPalette,
-  LuSettings2,
-  LuChevronLeft,
-  LuChevronRight,
   LuExpand,
   LuLock,
   LuPhone,
   LuSend,
-  LuTrendingUp,
   LuClock,
   LuShieldAlert,
+  LuWatch,
+  LuLayers,
+  LuCpu,
+  LuShield,
+  LuMaximize,
+  LuDroplet,
+  LuTrendingUp,
+  LuChevronLeft,
+  LuChevronRight,
 } from "react-icons/lu";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FaInstagram, FaYoutube } from "react-icons/fa";
@@ -27,7 +28,7 @@ import { getTelegramUser } from "../services/telegram";
 import { toast } from "react-toastify";
 import CountdownTimer from "./CountdownTimer";
 
-// Valyuta kursi (Aksioningizga mos ravishda yoki API orqali sozlashingiz mumkin)
+// Valyuta kursi
 const USD_RATE = 12700;
 
 /* 1. KATTALASHTIRILGAN RASM REJIMI (FULLSCREEN GALLERY) */
@@ -172,13 +173,17 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
   }, [tgUser?.id]);
 
   const currentPrice = Number(
-    auction.currentPrice || auction.startingPrice || 0
+    auction.currentPrice || auction.startingPrice || auction.startPrice || 0
   );
-  const minValidBid = currentPrice + (Number(auction.bidStep) || 1);
+  const minValidBid = currentPrice + (Number(auction.bidStep) || 10);
   const [customBid, setCustomBid] = useState("");
 
   const isAuctionEnded = auction?.endTime
-    ? new Date(auction.endTime).getTime() <= Date.now()
+    ? new Date(
+        typeof auction.endTime === "string"
+          ? auction.endTime.replace(" ", "T")
+          : auction.endTime
+      ).getTime() <= Date.now()
     : false;
 
   useEffect(() => {
@@ -192,7 +197,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
   const images =
     auction.images && auction.images.length > 0
       ? auction.images
-      : [auction.image || "https://via.placeholder.com/400"];
+      : [auction.image || auction.Image1 || "https://via.placeholder.com/400"];
 
   const openLink = (url) => {
     if (!url) return;
@@ -294,10 +299,13 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
   const bidNumber = Number(customBid);
   const isValidBid = customBid !== "" && bidNumber >= minValidBid;
 
+  const watchTitle =
+    auction.cardTitle || auction.title || auction.name || "Auksion Soati";
+
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 bg-[##0f192b] w-full h-full overflow-y-auto"
+        className="fixed inset-0 z-50 bg-[#112544] w-full h-full overflow-y-auto"
         initial={{ opacity: 0, y: "100%" }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: "100%" }}
@@ -320,7 +328,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
             >
               <img
                 src={images[activeImgIndex]}
-                alt={auction.title || auction.name}
+                alt={watchTitle}
                 className="w-full h-full object-cover pointer-events-none select-none"
                 draggable={false}
               />
@@ -354,7 +362,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
           {/* CONTENT SECTION */}
           <div className="px-4 pt-5 bg-[#112544] mb-[30px] rounded-t-3xl relative z-10 -mt-4 flex-1">
             <h2 className="text-2xl font-extrabold text-white leading-tight mb-1">
-              {auction.title || auction.name || "Auksion Avtomobili"}
+              {watchTitle}
             </h2>
 
             {/* ASOSIY NARX VA UZS QIYMATI */}
@@ -412,7 +420,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
             )}
 
             {/* TAYMER */}
-            <div className="bg-[#0f192b] p-3.5 rounded-2xl border border-indigo-100 flex justify-between items-center text-sm mb-4 shadow-sm">
+            <div className="bg-[#0f192b] p-3.5 rounded-2xl border border-indigo-900/50 flex justify-between items-center text-sm mb-4 shadow-sm">
               <span className="text-white font-semibold">Tugash vaqti:</span>
               <CountdownTimer endTime={auction.endTime} />
             </div>
@@ -423,18 +431,18 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                 Ruxsat holati tekshirilmoqda...
               </div>
             ) : isAuctionEnded ? (
-              <div className="bg-red-50 border mb-[15px] border-red-200 rounded-2xl p-4 text-center space-y-2">
-                <div className="flex items-center justify-center gap-2 text-red-600 font-bold text-sm">
+              <div className="bg-red-950/40 border mb-[15px] border-red-800 rounded-2xl p-4 text-center space-y-2">
+                <div className="flex items-center justify-center gap-2 text-red-400 font-bold text-sm">
                   <LuLock size={18} /> Auksion vaqti yakunlandi!
                 </div>
-                <p className="text-xs text-red-500 font-medium">
-                  Ushbu avtomobil uchun stavkalar qabul qilish to'xtatildi.
+                <p className="text-xs text-red-300 font-medium">
+                  Ushbu soat uchun stavkalar qabul qilish to'xtatildi.
                 </p>
               </div>
             ) : !inMiniApp ? (
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center space-y-3">
-                <LuLock className="mx-auto text-amber-500" size={28} />
-                <p className="text-xs text-amber-900 font-semibold">
+              <div className="bg-amber-950/40 border border-amber-800 rounded-2xl p-4 text-center space-y-3">
+                <LuLock className="mx-auto text-amber-400" size={28} />
+                <p className="text-xs text-amber-200 font-semibold">
                   Auksionda qatnashish va narx taklif qilish uchun ilovani
                   Telegram Mini App orqali oching!
                 </p>
@@ -507,9 +515,9 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
               /* --- STAVKA BERISH QISMI --- */
               <form
                 onSubmit={handleBidSubmit}
-                className="space-y-2 pt-3 border-t mb-[30px] border-slate-200"
+                className="space-y-2 pt-3 border-t mb-[30px] border-slate-700/50"
               >
-                <div className="flex items-center gap-1.5 text-xs text-emerald-500 font-bold mb-2">
+                <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold mb-2">
                   <FaCircleCheck size={16} /> Akkountingiz auksion uchun
                   tasdiqlangan
                 </div>
@@ -518,9 +526,8 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                   <label className="text-[11px] font-bold text-slate-400 uppercase">
                     O'zingiz stavka kiriting (Minimal: ${minValidBid}):
                   </label>
-                  {/* INPUT USTIDAGI UZS KORINIShI */}
                   {customBid !== "" && !isNaN(customBid) && (
-                    <span className="text-[11px] font-bold text-white ">
+                    <span className="text-[11px] font-bold text-white">
                       ≈ {(Number(customBid) * USD_RATE).toLocaleString()} UZS
                     </span>
                   )}
@@ -532,12 +539,12 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                     placeholder={`masalan: ${minValidBid}`}
                     value={customBid}
                     onChange={(e) => setCustomBid(e.target.value)}
-                    className={`flex-1 p-3 rounded-xl border-2 bg-white font-bold text-base outline-none transition-all ${
+                    className={`flex-1 p-3 rounded-xl border-2 bg-[#0f192b] font-bold text-white text-base outline-none transition-all ${
                       customBid === ""
-                        ? "border-slate-200"
+                        ? "border-slate-700"
                         : isValidBid
-                        ? "border-emerald-500 text-emerald-600 bg-white"
-                        : "border-red-500 text-red-600 bg-red-50/30"
+                        ? "border-emerald-500 text-emerald-400"
+                        : "border-red-500 text-red-400"
                     }`}
                   />
                   <button
@@ -546,7 +553,7 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
                     className={`px-5 py-3 font-bold rounded-xl text-white transition-all ${
                       isValidBid
                         ? "bg-emerald-600 hover:bg-emerald-700 active:scale-95 shadow-lg shadow-emerald-600/30"
-                        : "bg-slate-500 cursor-not-allowed"
+                        : "bg-slate-700 text-slate-400 cursor-not-allowed"
                     }`}
                   >
                     {loading ? "..." : "Yuborish"}
@@ -577,71 +584,94 @@ const AuctionDetailModal = ({ auction, onClose, isApproved: propApproved }) => {
               </div>
             )}
 
-            {/* XUSUSIYATLAR GRIDI */}
+            {/* XUSUSIYATLAR GRIDI (SOAT PARAMETRLARI) */}
             <div className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-2">
               Xususiyatlari
             </div>
             <div className="grid grid-cols-2 gap-2.5 mb-5">
-              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuCalendar className="text-white shrink-0" size={16} />
-                <div className="truncate">
-                  <span className="text-slate-300 block text-[10px]">Yili</span>
-                  <strong className="text-white">{auction.year || "-"}</strong>
-                </div>
-              </div>
-
-              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuGauge className="text-white shrink-0" size={16} />
-                <div className="truncate">
-                  <span className="text-slate-300 block text-[10px]">
-                    Probeg
-                  </span>
-                  <strong className="text-white">
-                    {auction.mileage ? `${auction.mileage} km` : "-"}
-                  </strong>
-                </div>
-              </div>
-
-              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuSettings2 className="text-white shrink-0" size={16} />
-                <div className="truncate">
-                  <span className="text-slate-300 block text-[10px]">
-                    Korobka
-                  </span>
-                  <strong className="text-white">
-                    {auction.gearbox || "-"}
-                  </strong>
-                </div>
-              </div>
-
-              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuFuel className="text-white shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-700/50 shadow-sm flex items-center gap-2 text-xs">
+                <LuWatch className="text-indigo-400 shrink-0" size={16} />
                 <div className="truncate">
                   <span className="text-slate-400 block text-[10px]">
-                    Yoqilg'i
+                    Brend
                   </span>
-                  <strong className="text-white">{auction.fuel || "-"}</strong>
+                  <strong className="text-white">
+                    {auction.brand || auction.Brand || "-"}
+                  </strong>
                 </div>
               </div>
 
-              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuPalette className="text-white shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-700/50 shadow-sm flex items-center gap-2 text-xs">
+                <LuLayers className="text-indigo-400 shrink-0" size={16} />
                 <div className="truncate">
-                  <span className="text-slate-300 block text-[10px]">
-                    Rangi
+                  <span className="text-slate-400 block text-[10px]">
+                    Korpus materiali
                   </span>
-                  <strong className="text-white">{auction.color || "-"}</strong>
+                  <strong className="text-white">
+                    {auction.caseMaterial || auction.CaseMaterial || "-"}
+                  </strong>
                 </div>
               </div>
 
-              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-2 text-xs">
-                <LuTrendingUp className="text-white shrink-0" size={16} />
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-700/50 shadow-sm flex items-center gap-2 text-xs">
+                <LuCpu className="text-indigo-400 shrink-0" size={16} />
                 <div className="truncate">
-                  <span className="text-slate-300 block text-[10px]">
+                  <span className="text-slate-400 block text-[10px]">
+                    Mexanizm
+                  </span>
+                  <strong className="text-white">
+                    {auction.mechanism || auction.Mechanism || "-"}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-700/50 shadow-sm flex items-center gap-2 text-xs">
+                <LuShield className="text-indigo-400 shrink-0" size={16} />
+                <div className="truncate">
+                  <span className="text-slate-400 block text-[10px]">Oyna</span>
+                  <strong className="text-white">
+                    {auction.glass || auction.Glass || "-"}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-700/50 shadow-sm flex items-center gap-2 text-xs">
+                <LuMaximize className="text-indigo-400 shrink-0" size={16} />
+                <div className="truncate">
+                  <span className="text-slate-400 block text-[10px]">
+                    Korpus o'lchami
+                  </span>
+                  <strong className="text-white">
+                    {auction.caseSize ||
+                      auction.CaseSize ||
+                      auction.case_size ||
+                      auction.size ||
+                      auction.diameter ||
+                      "-"}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-700/50 shadow-sm flex items-center gap-2 text-xs">
+                <LuDroplet className="text-indigo-400 shrink-0" size={16} />
+                <div className="truncate">
+                  <span className="text-slate-400 block text-[10px]">
+                    Suvga chidamlilik
+                  </span>
+                  <strong className="text-white">
+                    {auction.waterResistance || auction.WaterResistance || "-"}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="bg-[#0f192b] p-3 rounded-2xl border border-slate-700/50 shadow-sm flex items-center gap-2 text-xs col-span-2">
+                <LuTrendingUp className="text-indigo-400 shrink-0" size={16} />
+                <div className="truncate">
+                  <span className="text-slate-400 block text-[10px]">
                     Stavka qadami
                   </span>
                   <strong className="text-white">
-                    {auction.bidStep ? `$${auction.bidStep}` : "-"}
+                    {auction.bidStep ? `$${auction.bidStep}` : "+$10"}
                   </strong>
                 </div>
               </div>

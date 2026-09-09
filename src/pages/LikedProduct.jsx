@@ -28,7 +28,7 @@ const LikedProduct = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#0b1329]">
+    <div className="min-h-screen bg-[#112544]">
       <Navbar />
 
       <div className="px-3 mt-3 pb-20">

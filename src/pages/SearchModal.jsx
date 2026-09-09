@@ -55,7 +55,7 @@ const SearchModal = ({
   });
 
   return (
-    <div className="fixed inset-0 z-[100000000000] bg-[#112544] flex flex-col animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[10000000000000000000] bg-[#112544] flex flex-col animate-in fade-in duration-200">
       <div className="flex items-center gap-2 p-3 border-b border-slate-100 bg-[#0f192b] shadow-sm">
         <div className="relative flex-1">
           <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />

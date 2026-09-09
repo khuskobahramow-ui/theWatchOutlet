@@ -57,7 +57,7 @@ const FilterModal = ({ isOpen, onClose, cars = [] }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#112544] flex flex-col animate-in fade-in duration-200 h-full w-full">
+    <div className="fixed inset-0 z-[10000000000] bg-[#112544] flex flex-col animate-in fade-in duration-200 h-full w-full">
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-slate-700/60 bg-[#0f192b] shadow-sm">
         <h3 className="text-lg font-bold text-white">Filtr va Natijalar</h3>

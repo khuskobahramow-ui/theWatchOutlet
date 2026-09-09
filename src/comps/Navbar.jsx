@@ -81,7 +81,7 @@ const Navbar = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 z-100000 bg-slate-900/50 backdrop-blur-sm"
+              className="fixed inset-0 z-[10000000000] bg-slate-900/50 backdrop-blur-sm"
             />
 
             {/* O'ng tarafdan chiquvchi Oyna (Sidebar) */}
@@ -90,7 +90,7 @@ const Navbar = () => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 z-10000000 w-72 h-full bg-[#112544] shadow-2xl flex flex-col justify-between"
+              className="fixed top-0 right-0 z-[1000000000000] w-72 h-full bg-[#112544] shadow-2xl flex flex-col justify-between"
             >
               <div>
                 {/* Header: Sarlavha va Yopish tugmasi */}

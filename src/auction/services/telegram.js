@@ -1,3 +1,5 @@
+import { FaLessThanEqual } from "react-icons/fa6";
+
 // Test rejimini boshqarish: true bo'lsa brauzerda test qiladi, false bo'lsa haqiqiy Telegram WebApp ishlaydi
 const IS_TEST_MODE = false;
 

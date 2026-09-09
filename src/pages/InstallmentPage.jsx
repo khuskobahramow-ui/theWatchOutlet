@@ -9,14 +9,15 @@ import { IoIosArrowBack } from "react-icons/io";
 import { FiFilter } from "react-icons/fi";
 
 const InstallmentPage = () => {
-  const [cars, setCars] = useState([]);
+  const [watches, setWatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCar, setSelectedCar] = useState(null);
+  const [selectedWatch, setSelectedWatch] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
+    // collection nomi installment_watches ga o'zgartirildi
     const unsubscribe = onSnapshot(
-      collection(db, "installment_cars"),
+      collection(db, "installment_watches"),
       (snapshot) => {
         const list = snapshot.docs
           .map((doc) => ({
@@ -25,11 +26,11 @@ const InstallmentPage = () => {
           }))
           .filter((item) => item.status !== "no-active");
 
-        setCars(list);
+        setWatches(list);
         setLoading(false);
       },
       (error) => {
-        console.error("Nasiya mashinalarini yuklashda xato:", error);
+        console.error("Nasiya soatlarini yuklashda xato:", error);
         setLoading(false);
       }
     );
@@ -50,16 +51,16 @@ const InstallmentPage = () => {
         </NavLink>
 
         {/* Filtr Ochish Tugmasi */}
-        <button
+        {/* <button
           onClick={() => setIsFilterOpen(true)}
           className="flex items-center gap-1.5 mr-[10px] bg-white border border-indigo-100 text-indigo-600 font-semibold text-xs px-3 py-1.5 rounded-xl active:scale-95 transition-all"
         >
           <FiFilter size={16} />
           Filtr
-        </button>
+        </button> */}
       </div>
 
-      <div className="mb-5 mt-2 px-[9px] ">
+      <div className="mb-5 mt-2 px-[9px]">
         <h1 className="text-2xl font-black text-white">Nasiya Savdo</h1>
         <p className="text-xs text-white mt-0.5">
           Qulay boshlang'ich to'lov va muddatli to'lov variantlari
@@ -75,13 +76,13 @@ const InstallmentPage = () => {
             />
           ))}
         </div>
-      ) : cars && cars.length > 0 ? (
+      ) : watches && watches.length > 0 ? (
         <div className="grid px-[9px] grid-cols-2 gap-2">
-          {cars.map((car) => (
+          {watches.map((watch) => (
             <InstallmentCard
-              key={car.id || car.messageId}
-              item={car}
-              onClick={() => setSelectedCar(car)}
+              key={watch.id || watch.messageId}
+              item={watch}
+              onClick={() => setSelectedWatch(watch)}
             />
           ))}
         </div>
@@ -92,19 +93,19 @@ const InstallmentPage = () => {
       )}
 
       {/* Detail Modal */}
-      {selectedCar && (
+      {selectedWatch && (
         <InstallmentDetailModal
-          car={selectedCar}
-          onClose={() => setSelectedCar(null)}
+          watch={selectedWatch}
+          onClose={() => setSelectedWatch(null)}
         />
       )}
 
       {/* Nasiya Filtr Modali */}
       <InstallmentFilterModal
-        cars={cars}
+        watches={watches}
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        onSelectCar={(car) => setSelectedCar(car)}
+        onSelectWatch={(watch) => setSelectedWatch(watch)}
       />
     </div>
   );

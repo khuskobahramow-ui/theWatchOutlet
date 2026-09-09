@@ -13,6 +13,14 @@ import {
   LuExpand,
   LuCalculator,
   LuArrowUpDown,
+  LuShield,
+  LuWatch,
+  LuUser,
+  LuMaximize2,
+  LuDroplets,
+  LuLayers,
+  LuTag,
+  LuActivity,
 } from "react-icons/lu";
 import { FaInstagram, FaYoutube } from "react-icons/fa";
 
@@ -21,16 +29,16 @@ const USD_TO_UZS = 12700; // Valyuta kursi
 const StatChip = ({ icon: Icon, label, value }) => {
   const hasValue = value && value !== "" && value !== "-";
   return (
-    <div className="bg-white rounded-2xl p-3.5 flex flex-col gap-1.5 min-w-0 shadow-sm border border-slate-100/80">
+    <div className="bg-[#0f192b] rounded-2xl p-3.5 flex flex-col gap-1.5 min-w-0 shadow-sm border border-slate-800">
       <div className="flex items-center gap-1.5 text-slate-400">
-        {Icon && <Icon size={15} />}
-        <span className="text-[10px] font-bold uppercase tracking-wider">
+        {Icon && <Icon size={15} className="text-blue-400" />}
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
           {label}
         </span>
       </div>
       <span
         className={`text-sm font-bold truncate ${
-          hasValue ? "text-slate-800" : "text-slate-300 font-medium"
+          hasValue ? "text-white" : "text-slate-500 font-medium"
         }`}
       >
         {hasValue ? value : "Kiritilmagan"}
@@ -146,36 +154,37 @@ const FullscreenGallery = ({ images, startIndex, onClose }) => {
 };
 
 /* 2. TO'LIQ EKRANLI NASIYA SAVDO DETAIL MODAL */
-const InstallmentDetailModal = ({ car, onClose }) => {
-  if (!car) return null;
+const InstallmentDetailModal = ({ car, item, watch, onClose }) => {
+  const data = car || item || watch;
+
+  if (!data) return null;
 
   const images =
-    car?.images && car.images.length > 0
-      ? car.images
-      : car?.image
-      ? [car.image]
+    data?.images && data.images.length > 0
+      ? data.images
+      : data?.image
+      ? [data.image]
       : [];
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
-  const [currency, setCurrency] = useState("USD"); // "USD" yoki "UZS"
+  const [currency, setCurrency] = useState("USD");
 
-  // Dynamic Kalkulyator Statelari
-  const minDownUSD = Number(car?.minDownPayment || 0);
-  const totalUSD = Number(car?.totalPrice || car?.price || 0);
-  const minMonths = Number(car?.minPeriod || 6);
-  const maxMonths = Number(car?.maxPeriod || 60);
-  const interestRate = Number(car?.annualInterest || 0);
+  const minDownUSD = Number(data?.minDownPayment || 0);
+  const totalUSD = Number(data?.totalPrice || data?.price || 0);
+  const minMonths = Number(data?.minTerm || data?.minPeriod || 3);
+  const maxMonths = Number(data?.maxTerm || data?.maxPeriod || 12);
+  const interestRate = Number(data?.annualRate || data?.annualInterest || 0);
 
   const [downPaymentUSD, setDownPaymentUSD] = useState(minDownUSD);
   const [months, setMonths] = useState(maxMonths);
 
   useEffect(() => {
-    if (car) {
-      setDownPaymentUSD(Number(car.minDownPayment || 0));
-      setMonths(Number(car.maxPeriod || 60));
+    if (data) {
+      setDownPaymentUSD(Number(data.minDownPayment || 0));
+      setMonths(Number(data.maxTerm || data.maxPeriod || 12));
     }
-  }, [car]);
+  }, [data]);
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -185,8 +194,8 @@ const InstallmentDetailModal = ({ car, onClose }) => {
     };
   }, []);
 
-  const instagramUrl = car.instagram || car.Instagram || "";
-  const youtubeUrl = car.youtube || car.Youtube || car.YouTube || "";
+  const instagramUrl = data.instagram || data.Instagram || "";
+  const youtubeUrl = data.youtube || data.Youtube || data.YouTube || "";
 
   const goNext = () => setActiveIndex((prev) => (prev + 1) % images.length);
   const goPrev = () =>
@@ -198,7 +207,6 @@ const InstallmentDetailModal = ({ car, onClose }) => {
     else if (info.offset.x > threshold) goPrev();
   };
 
-  // Oylik to'lov hisoblash
   const calculateMonthlyUSD = () => {
     const remaining = totalUSD - downPaymentUSD;
     if (remaining <= 0) return 0;
@@ -216,7 +224,6 @@ const InstallmentDetailModal = ({ car, onClose }) => {
     else setDownPaymentUSD(num);
   };
 
-  // Narx formatlash funksiyasi
   const formatPrice = (usdValue) => {
     if (currency === "UZS") {
       return `${(usdValue * USD_TO_UZS).toLocaleString()} so'm`;
@@ -227,7 +234,7 @@ const InstallmentDetailModal = ({ car, onClose }) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[200] bg-[#F8FAFC] w-full h-full overflow-y-auto"
+        className="fixed inset-0 z-[200] bg-[#112544] w-full h-full overflow-y-auto"
         initial={{ opacity: 0, y: "100%" }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: "100%" }}
@@ -251,7 +258,7 @@ const InstallmentDetailModal = ({ car, onClose }) => {
               >
                 <img
                   src={images[activeIndex]}
-                  alt={car.name}
+                  alt={data.cardTitle || data.name || data.brand}
                   className="w-full h-full object-cover pointer-events-none select-none"
                   draggable={false}
                 />
@@ -264,7 +271,6 @@ const InstallmentDetailModal = ({ car, onClose }) => {
 
             <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none z-10" />
 
-            {/* CHIQISH TUGMASI */}
             <button
               type="button"
               onClick={onClose}
@@ -273,7 +279,6 @@ const InstallmentDetailModal = ({ car, onClose }) => {
               <LuX size={20} />
             </button>
 
-            {/* FULLSCREEN TUGMASI */}
             {images.length > 0 && (
               <button
                 type="button"
@@ -284,7 +289,6 @@ const InstallmentDetailModal = ({ car, onClose }) => {
               </button>
             )}
 
-            {/* INDIKATORLAR */}
             {images.length > 1 && (
               <div className="absolute bottom-6 right-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10 z-10">
                 {activeIndex + 1} / {images.length}
@@ -308,22 +312,32 @@ const InstallmentDetailModal = ({ car, onClose }) => {
           </div>
 
           {/* ASOSIY MA'LUMOT BO'LIMI */}
-          <div className="px-4 pt-6 bg-[#F8FAFC] rounded-t-3xl relative z-10 -mt-5 flex-1">
+          <div className="px-4 pt-6 bg-[#112544] rounded-t-3xl relative z-10 -mt-5 flex-1">
             <div className="flex items-start justify-between gap-3 mb-1">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-snug">
-                {car.name || "Avtomobil"}
+              <h2 className="text-2xl font-black text-white tracking-tight leading-snug">
+                {data.cardTitle ||
+                  (data.brand
+                    ? `${data.brand} ${data.name || ""}`
+                    : data.name || "Mahsulot")}
               </h2>
             </div>
 
-            {car.listingId && (
-              <div className="text-[11px] text-slate-400 font-mono tracking-wider mb-2">
-                ID: {car.listingId}
-              </div>
-            )}
+            {/* <div className="flex items-center gap-3 mb-3">
+              {(data.id || data.listingId) && (
+                <div className="text-[11px] text-blue-400 font-mono tracking-wider">
+                  ID: {data.id || data.listingId}
+                </div>
+              )}
+              {data.status && (
+                <div className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  {data.status}
+                </div>
+              )}
+            </div> */}
 
             {/* NARX VA VALYUTA TOGGLE */}
             <div className="flex items-center justify-between mb-5">
-              <div className="text-blue-600 font-black text-3xl tracking-tight">
+              <div className="text-white font-black text-3xl tracking-tight">
                 {formatPrice(totalUSD)}
               </div>
 
@@ -332,7 +346,7 @@ const InstallmentDetailModal = ({ car, onClose }) => {
                 onClick={() =>
                   setCurrency((prev) => (prev === "USD" ? "UZS" : "USD"))
                 }
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200/60 text-blue-600 text-xs font-bold active:scale-95 transition-all shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-400/30 text-blue-400 text-xs font-bold active:scale-95 transition-all shadow-sm"
               >
                 <LuArrowUpDown size={14} />
                 <span>{currency === "USD" ? "USD ($)" : "UZS (so'm)"}</span>
@@ -368,7 +382,7 @@ const InstallmentDetailModal = ({ car, onClose }) => {
             )}
 
             {/* NASIYA SAVDO KALKULYATORI */}
-            <div className="mb-6 bg-[#0f172a] text-white p-5 rounded-3xl shadow-xl shadow-slate-900/10 space-y-5 border border-slate-800 relative overflow-hidden">
+            <div className="mb-6 bg-[#0f172a] text-white p-5 rounded-3xl shadow-xl space-y-5 border border-slate-800 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-wider">
                   <LuCalculator size={17} /> Nasiya Kalkulyatori
@@ -460,55 +474,148 @@ const InstallmentDetailModal = ({ car, onClose }) => {
               </div>
             </div>
 
-            {/* TEXNIK XUSUSIYATLAR */}
+            {/* BARCHA TEXNIK XUSUSIYATLAR */}
             <div className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2.5">
               Xususiyatlari
             </div>
             <div className="grid grid-cols-2 gap-2.5 mb-6">
-              <StatChip icon={LuCalendar} label="Yili" value={car.year} />
-              <StatChip
-                icon={LuGauge}
-                label="Probeg"
-                value={
-                  car.mileage
-                    ? `${Number(car.mileage).toLocaleString()} km`
-                    : ""
-                }
-              />
-              <StatChip
-                icon={LuSettings2}
-                label="Korobka"
-                value={car.gearbox}
-              />
-              <StatChip icon={LuPalette} label="Rangi" value={car.color} />
-              <StatChip icon={LuSettings2} label="Motor" value={car.engine} />
-              <StatChip icon={LuFuel} label="Yoqilg'i" value={car.fuel} />
-              <StatChip icon={LuSettings2} label="VIN raqami" value={car.vin} />
-            </div>
+              {/* Soat hamda Avto parametrlari */}
+              {(data.refCode || data.model || data.ref) && (
+                <StatChip
+                  icon={LuTag}
+                  label="Model / Ref"
+                  value={data.refCode || data.model || data.ref}
+                />
+              )}
 
-            {/* JOY VA SANA */}
-            <div className="flex items-center justify-between text-xs font-medium text-slate-500 mb-6 px-1">
-              <div className="flex items-center gap-1.5">
-                <LuMapPin size={15} className="text-slate-400" />
-                <span>{car.location || "O'zbekiston"}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <LuCalendar size={15} className="text-slate-400" />
-                <span>{car.date || "Bugun"}</span>
-              </div>
+              {data.brand && (
+                <StatChip icon={LuWatch} label="Brend" value={data.brand} />
+              )}
+
+              {data.caseMaterial && (
+                <StatChip
+                  icon={LuLayers}
+                  label="Korpus Materiali"
+                  value={data.caseMaterial}
+                />
+              )}
+
+              {data.mechanism && (
+                <StatChip
+                  icon={LuSettings2}
+                  label="Mexanizm"
+                  value={data.mechanism}
+                />
+              )}
+
+              {data.glass && (
+                <StatChip
+                  icon={LuShield}
+                  label="Oyna (Glass)"
+                  value={data.glass}
+                />
+              )}
+
+              {(data.braceletStrap || data.strap || data.bracelet) && (
+                <StatChip
+                  icon={LuLayers}
+                  label="Brazlet / Remen"
+                  value={data.braceletStrap || data.strap || data.bracelet}
+                />
+              )}
+
+              {data.gender && (
+                <StatChip
+                  icon={LuUser}
+                  label="Jinsi (Gender)"
+                  value={data.gender}
+                />
+              )}
+
+              {data.caseSize && (
+                <StatChip
+                  icon={LuMaximize2}
+                  label="Korpus O'lchami"
+                  value={data.caseSize}
+                />
+              )}
+
+              {data.waterResistance && (
+                <StatChip
+                  icon={LuDroplets}
+                  label="Suv Chidamliligi"
+                  value={data.waterResistance}
+                />
+              )}
+
+              {data.year && (
+                <StatChip icon={LuCalendar} label="Yili" value={data.year} />
+              )}
+
+              {data.mileage && (
+                <StatChip
+                  icon={LuGauge}
+                  label="Probeg"
+                  value={`${Number(data.mileage).toLocaleString()} km`}
+                />
+              )}
+
+              {data.gearbox && (
+                <StatChip
+                  icon={LuSettings2}
+                  label="Korobka"
+                  value={data.gearbox}
+                />
+              )}
+
+              {data.color && (
+                <StatChip icon={LuPalette} label="Rangi" value={data.color} />
+              )}
+
+              {data.engine && (
+                <StatChip icon={LuActivity} label="Motor" value={data.engine} />
+              )}
+
+              {data.fuel && (
+                <StatChip icon={LuFuel} label="Yoqilg'i" value={data.fuel} />
+              )}
+
+              {data.vin && (
+                <StatChip icon={LuSettings2} label="VIN" value={data.vin} />
+              )}
+
+              {data.diameter && (
+                <StatChip
+                  icon={LuMaximize2}
+                  label="O'lchami"
+                  value={data.diameter}
+                />
+              )}
             </div>
 
             {/* TAVSIF */}
-            {car.description && (
+            {data.description && (
               <div className="mb-20">
                 <div className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2.5">
                   Tavsif
                 </div>
-                <p className="text-sm text-slate-700 leading-relaxed bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                  {car.description}
+                <p className="text-sm text-slate-300 leading-relaxed bg-[#0f192b] p-4 rounded-2xl border border-slate-800 shadow-sm">
+                  {data.description}
                 </p>
               </div>
             )}
+
+            {/* JOY VA SANA */}
+            <div className="flex items-center justify-between text-xs font-medium text-slate-400 mb-6 px-1">
+              {/* <div className="flex items-center gap-1.5">
+                <LuMapPin size={15} className="text-blue-400" />
+                <span>{data.location || "O'zbekiston"}</span>
+              </div> */}
+              <div className="flex items-center gap-1.5">
+                <LuCalendar size={15} className="text-blue-400" />
+                <span>{data.date || "Bugun"}</span>
+              </div>
+            </div>
           </div>
         </div>
 

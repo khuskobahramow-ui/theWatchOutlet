@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import BottomNav from "./pages/BottomNav";
 import About from "./pages/About";
-import SellCar from "./pages/SellCar";
 import LikedProduct from "./pages/LikedProduct";
 import Bozor from "./pages/Bozor";
 import Admin from "./pages/Admin";
@@ -21,6 +20,7 @@ import TelegramGuard from "./auction/components/TelegramGuard";
 
 import { trackTelegramUser } from "./trackUser";
 import UsedWatches from "./pages/UsedWatches";
+import SellWatch from "./pages/SellCar";
 
 const App = () => {
   useEffect(() => {
@@ -36,7 +36,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/sell" element={<SellCar />} />
+        <Route path="/sell" element={<SellWatch />} />
         <Route path="/bozor" element={<Bozor />} />
         <Route path="/nasiya" element={<InstallmentPage />} />{" "}
         <Route path="/used-watches" element={<UsedWatches />} />

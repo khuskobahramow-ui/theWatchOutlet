@@ -73,7 +73,7 @@ const CarCard = ({ car: watch }) => {
 
             {/* Faqat isUsed haqiqatan true bo'lsa B/U chiqadi */}
             {watch?.isUsed === true && (
-              <span className="bg-amber-500 text-black text-[10px] font-extrabold px-1.5 py-0.5 rounded-md uppercase shadow-md tracking-wider">
+              <span className="bg-amber-500 text-black text-[10px] font-extrabold px-1.5 py-0.5 rounded-md  shadow-md tracking-wider">
                 Б/у
               </span>
             )}
